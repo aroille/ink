@@ -11,32 +11,32 @@
 
 namespace ink
 {
-	struct Instance
-	{
-		Transform object_to_world;
-		Transform world_to_object;
-		Shape*		shape;
-		Vec3f			color;
+  struct Instance
+  {
+    Transform object_to_world;
+    Transform world_to_object;
+    Shape*    shape;
+    Vec3f     color;
 
-		bool intersect(const Ray& ray, RayHit& hit) const;
-	};
+    bool intersect(const Ray& ray, RayHit& hit) const;
+  };
 
-	class INK_API Renderer
-	{
-		public:
-			Renderer();
-			~Renderer();
+  class INK_API Renderer
+  {
+  public:
+    Renderer();
+    ~Renderer();
 
-			void add_instance(Shape* shape, const Transform& tf, const Vec3f& color);
-			void render();
+    void add_instance(Shape* shape, const Transform& tf, const Vec3f& color);
+    void render();
 
-		public:
-			Camera camera;
-			Film film;
+  public:
+    Camera camera;
+    Film film;
 
-		private:
-			std::vector<Instance>* instances;
-	};
+  private:
+    std::vector<Instance>* instances;
+  };
 
-}	// namespace ink
+}    // namespace ink
 

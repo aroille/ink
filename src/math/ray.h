@@ -6,22 +6,22 @@
 
 namespace ink
 {
-	struct Ray
-	{
-		Point3f o;			// origin
-		Vec3f		d;			// direction
-		float		time;
-		uint32	depth;
-	};
+  struct Ray
+  {
+    Point3f o;			// origin
+    Vec3f		d;			// direction
+    float		time;
+    uint32	depth;
+  };
 
-	struct Instance;
+  struct Instance;
 
-	struct RayHit
-	{
-		Point3f					p;						// position
-		//Normal3f			n;						// surface normal
-		float						distance_sq;	// squared distance from ray origin
-		const Instance* instance;
-	};
+  struct RayHit
+  {
+    Point3f					p;						// position
+    //Normal3f			n;						// surface normal
+    float						distance_sq;	// squared distance from ray origin
+    const Instance* instance;
+  };
 
 } // namespace ink
