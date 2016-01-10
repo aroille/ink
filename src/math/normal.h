@@ -26,22 +26,22 @@ namespace ink
     Normal3(T x_val, T y_val, T z_val);
     explicit Normal3(Vector3<T> const& in);
 
-    Normal3<T> operator-() const;
-    Normal3<T> operator+(Normal3<T> const& in) const;
-    Normal3<T> operator-(Normal3<T> const& in) const;
-    Normal3<T> operator*(T f) const;
-    Normal3<T> operator/(T f) const;
+    Normal3<T>  operator-() const;
+    Normal3<T>  operator+(Normal3<T> const& in) const;
+    Normal3<T>  operator-(Normal3<T> const& in) const;
+    Normal3<T>  operator*(T f) const;
+    Normal3<T>  operator/(T f) const;
 
     Normal3<T>& operator+=(Normal3<T> const& in);
     Normal3<T>& operator-=(Normal3<T> const& in);
     Normal3<T>& operator*=(T f);
     Normal3<T>& operator/=(T f);
 
-    T operator[](int i) const;
-    T& operator[](int i);
+    T           operator[](int i) const;
+    T&          operator[](int i);
 
-    float	length() const;
-    float	length_squared() const;
+    float	      length() const;
+    float	      length_squared() const;
   };
 
   typedef Normal3<float>	Normal3f;

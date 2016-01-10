@@ -30,22 +30,22 @@ namespace ink
     explicit Vector3(Normal3<T> const& in);
     explicit Vector3(Point3<T> const& in);
 
-    Vector3<T> operator-() const;
-    Vector3<T> operator+(Vector3<T> const& in) const;
-    Vector3<T> operator-(Vector3<T> const& in) const;
-    Vector3<T> operator*(T f) const;
-    Vector3<T> operator/(T f) const;
+    Vector3<T>  operator-() const;
+    Vector3<T>  operator+(Vector3<T> const& in) const;
+    Vector3<T>  operator-(Vector3<T> const& in) const;
+    Vector3<T>  operator*(T f) const;
+    Vector3<T>  operator/(T f) const;
 
     Vector3<T>& operator+=(Vector3<T> const& in);
     Vector3<T>& operator-=(Vector3<T> const& in);
     Vector3<T>& operator*=(T f);
     Vector3<T>& operator/=(T f);
 
-    T operator[](int i) const;
-    T& operator[](int i);
+    T           operator[](int i) const;
+    T&          operator[](int i);
 
-    float	length() const;
-    float	length_squared() const;
+    float	      length() const;
+    float	      length_squared() const;
   };
 
 

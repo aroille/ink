@@ -44,18 +44,15 @@ namespace ink
     Transform(const Matrix4x4& m);
     Transform(const Matrix4x4& m, const Matrix4x4& m_inv);
 
-    bool operator==(const Transform& in) const;
-    bool operator!=(const Transform& in) const;
-    Transform operator*(const Transform &t2) const;
+    bool              operator==(const Transform& in) const;
+    bool              operator!=(const Transform& in) const;
+    Transform         operator*(const Transform &t2) const;
 
-    INK_API friend Transform inverse(const Transform& t);
-    INK_API friend Transform transpose(const Transform& t);
-
-    const Matrix4x4& matrix() const { return m; }
-    const Matrix4x4& inverse_matrix() const { return m_inv; }
+    const Matrix4x4&  matrix() const { return m; }
+    const Matrix4x4&  inverse_matrix() const { return m_inv; }
 
     template <typename T>
-    inline Point3<T> operator()(const Point3<T>&) const;
+    inline Point3<T>  operator()(const Point3<T>&) const;
 
     template <typename T>
     inline Vector3<T> operator()(const Vector3<T>&) const;
@@ -63,7 +60,10 @@ namespace ink
     template <typename T>
     inline Normal3<T> operator()(const Normal3<T>&) const;
 
-    inline Ray operator()(const Ray&) const;
+    inline Ray        operator()(const Ray&) const;
+
+    INK_API friend Transform inverse(const Transform& t);
+    INK_API friend Transform transpose(const Transform& t);
 
   private:
     Matrix4x4 m;

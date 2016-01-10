@@ -23,22 +23,22 @@ namespace ink
     Point3(Point3 const& in) = default;
     Point3(float x_val, float y_val, float z_val);
 
-    Point3<T> operator-() const;
-    Point3<T> operator+(Point3<T> const& in) const;
-    Point3<T> operator+(Vector3<T> const& in) const;
-    Vector3<T> operator-(Point3<T> const& in) const;
-    Point3<T> operator-(Vector3<T> const& in) const;
-    Point3<T> operator*(T f) const;
-    Point3<T> operator/(T f) const;
+    Point3<T>   operator-() const;
+    Point3<T>   operator+(Point3<T> const& in) const;
+    Point3<T>   operator+(Vector3<T> const& in) const;
+    Vector3<T>  operator-(Point3<T> const& in) const;
+    Point3<T>   operator-(Vector3<T> const& in) const;
+    Point3<T>   operator*(T f) const;
+    Point3<T>   operator/(T f) const;
 
-    Point3<T>& operator+=(Point3<T> const& in);
-    Point3<T>& operator+=(Vector3<T> const& in);
-    Point3<T>& operator-=(Vector3<T> const& in);
-    Point3<T>& operator*=(T f);
-    Point3<T>& operator/=(T f);
+    Point3<T>&  operator+=(Point3<T> const& in);
+    Point3<T>&  operator+=(Vector3<T> const& in);
+    Point3<T>&  operator-=(Vector3<T> const& in);
+    Point3<T>&  operator*=(T f);
+    Point3<T>&  operator/=(T f);
 
-    T operator[](int i) const;
-    T& operator[](int i);
+    T           operator[](int i) const;
+    T&          operator[](int i);
   };
 
   typedef Point3<float> Point3f;
