@@ -1,6 +1,6 @@
 
 #include "core/camera.h"
-#include "core/random.h"
+#include "math/random.h"
 
 namespace ink
 {

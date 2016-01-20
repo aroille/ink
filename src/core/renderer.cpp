@@ -1,5 +1,5 @@
 #include "core/renderer.h"
-#include "core/random.h"
+#include "math/random.h"
 
 namespace ink
 {
