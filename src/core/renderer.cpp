@@ -1,4 +1,5 @@
 #include "core/renderer.h"
+#include "core/random.h"
 
 namespace ink
 {
@@ -11,6 +12,7 @@ namespace ink
     if (shape->intersect(object_ray, object_hit))
     {
       hit.p = object_to_world(object_hit.p);
+      hit.n = normalize(object_to_world(object_hit.n));
       hit.distance_sq = distance_squared(ray.o, hit.p);
       hit.instance = this;
       return true;
@@ -20,12 +22,10 @@ namespace ink
 
   Renderer::Renderer()
   {
-    instances = new std::vector<Instance>();
   }
 
   Renderer::~Renderer()
   {
-    delete instances;
   }
 
   void Renderer::add_instance(Shape* shape, const Transform& tf, const Vec3f& color)
@@ -36,43 +36,59 @@ namespace ink
     inst.world_to_object = inverse(tf);
     inst.color = color;
 
-    instances->push_back(inst);
+    instances.push_back(inst);
   }
 
-  void Renderer::render()
+  void Renderer::render(uint32 spp)
   {
+    camera.film_width = film.width();
+    camera.film_height = film.height();
+    camera.update_transforms();
+
     film.clear();
-    camera.set_screen_size(film.width(), film.height());
+
+    RandomGenerator generator(-0.5, 0.5);
 
     // debug
-    //uint32 x = 250;
-    //uint32 y = 250;
+   // uint32 x = 512;
+    //uint32 y = 700;
 
     for (uint32 y = 0; y < film.height(); y++)
     {
       for (uint32 x = 0; x < film.width(); x++)
       {
-        Ray primary_ray;
-        camera.generate_ray(x, y, primary_ray);
+        Vec3f radiance = Vec3f::zero;
 
-        RayHit primary_hit{ Point3f(0, 0, 0), FLT_MAX, nullptr };
-
-        for (uint32 i = 0; i < instances->size(); i++)
+        for (uint32 s = 0; s < spp; s++)
         {
-          RayHit hit;
-          Instance& instance = (*instances)[i];
-          if (instance.intersect(primary_ray, hit))
+          Ray primary_ray;
+          camera.generate_ray(x, y, primary_ray, generator);
+
+          RayHit primary_hit{ Point3f(0, 0, 0), Normal3f(0, 0, 0), FLT_MAX, nullptr };
+
+          for (uint32 i = 0; i < instances.size(); i++)
+            //uint32 i = 3;
           {
-            if (hit.distance_sq < primary_hit.distance_sq)
-              primary_hit = hit;
+            RayHit hit;
+            Instance& instance = instances[i];
+            if (instance.intersect(primary_ray, hit))
+            {
+              if (hit.distance_sq < primary_hit.distance_sq)
+                primary_hit = hit;
+            }
+          }
+
+          if (primary_hit.instance)
+          {
+            radiance += primary_hit.instance->color * dot(-primary_ray.d, primary_hit.n);
+            //radiance += 0.5f*(Vec3f(primary_hit.n) + Vec3f::one);
+            //radiance += Vec3f(primary_hit.n);
+
           }
         }
 
-        if (primary_hit.instance)
-        {
-          Vec3f& r = film.pixel(x, y);
-          r = primary_hit.instance->color;
-        }
+        film.pixel(x, y) = radiance / ((float)spp);
+        
       }
     }
   }

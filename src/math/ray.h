@@ -3,6 +3,7 @@
 #include "core/ink.h"
 #include "math/point.h"
 #include "math/vector.h"
+#include "math/normal.h"
 
 namespace ink
 {
@@ -19,7 +20,7 @@ namespace ink
   struct RayHit
   {
     Point3f         p;            // position
-    //Normal3f      n;            // surface normal
+    Normal3f        n;            // surface normal
     float           distance_sq;  // squared distance from ray origin
     const Instance* instance;
   };

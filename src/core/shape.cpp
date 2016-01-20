@@ -22,6 +22,10 @@ namespace ink
       thit = t1;
 
     hit.p = ray.o + ray.d * thit;
+    hit.n = normalize(Normal3f(hit.p - Point3f(0,0,0)));
+
+    if (dot(ray.d, hit.n) > 0.0)
+      hit.n = -hit.n;
 
     return true;
   }

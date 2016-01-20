@@ -99,8 +99,8 @@ namespace ink
   {
     T x = v.x, y = v.y, z = v.z;
     return Vector3<T>(m.m[0][0] * x + m.m[0][1] * y + m.m[0][2] * z,
-      m.m[1][0] * x + m.m[1][1] * y + m.m[1][2] * z,
-      m.m[2][0] * x + m.m[2][1] * y + m.m[2][2] * z);
+                      m.m[1][0] * x + m.m[1][1] * y + m.m[1][2] * z,
+                      m.m[2][0] * x + m.m[2][1] * y + m.m[2][2] * z);
   }
 
   //================================================================================
@@ -109,8 +109,8 @@ namespace ink
   {
     T x = n.x, y = n.y, z = n.z;
     return Normal3<T>(m_inv.m[0][0] * x + m_inv.m[1][0] * y + m_inv.m[2][0] * z,
-      m_inv.m[0][1] * x + m_inv.m[1][1] * y + m_inv.m[2][1] * z,
-      m_inv.m[0][2] * x + m_inv.m[1][2] * y + m_inv.m[2][2] * z);
+                      m_inv.m[0][1] * x + m_inv.m[1][1] * y + m_inv.m[2][1] * z,
+                      m_inv.m[0][2] * x + m_inv.m[1][2] * y + m_inv.m[2][2] * z);
   }
 
   inline Ray Transform::operator()(const Ray& r) const

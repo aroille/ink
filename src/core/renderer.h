@@ -11,6 +11,8 @@
 
 namespace ink
 {
+  template class INK_API std::vector<Instance>;
+
   struct Instance
   {
     Transform object_to_world;
@@ -28,14 +30,14 @@ namespace ink
     ~Renderer();
 
     void add_instance(Shape* shape, const Transform& tf, const Vec3f& color);
-    void render();
+    void render(uint32 spp = 1);
 
   public:
     Camera camera;
     Film film;
 
   private:
-    std::vector<Instance>* instances;
+    std::vector<Instance> instances;
   };
 
 }    // namespace ink

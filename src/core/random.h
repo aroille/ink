@@ -1,0 +1,35 @@
+#pragma once
+
+#include "core/ink.h"
+#include "math/geometry.h"
+#include <random>
+
+namespace ink
+{
+  class INK_API RandomGenerator
+  {
+  public:
+    RandomGenerator(float min, float max)
+    {
+      random_engine = new std::mt19937(1729);
+      distr = new std::uniform_real_distribution<>(min, max);
+    }
+    
+    ~RandomGenerator()
+    {
+      delete distr;
+      delete random_engine;
+    }
+
+    float operator ()()
+    {
+      return (*distr)(*random_engine);
+    }
+
+  private:
+      std::mt19937* random_engine; // this class is not thread-safe !
+      std::uniform_real_distribution<>* distr;
+  };
+
+}	// namespace ink
+
