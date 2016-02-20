@@ -26,14 +26,18 @@ namespace ink
   class INK_API Renderer
   {
   public:
+
     Renderer();
     ~Renderer();
 
     void add_instance(Shape* shape, const Transform& tf, const Vec3f& color);
     void render(uint32 spp = 1);
 
+  protected:
+    bool intersect_world(const Ray& ray, RayHit& hit);
+
   public:
-    Camera camera;
+    PinholeCamera camera;
     Film film;
 
   private:

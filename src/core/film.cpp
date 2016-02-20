@@ -1,4 +1,5 @@
 #include "core/film.h"
+#include "core/log.h"
 
 namespace ink
 {
@@ -23,17 +24,17 @@ namespace ink
     h = height;
 
     free(data);
-    data = (Vec3f*)malloc(w*h*sizeof(Vec3f));
+    data = (Pixel*)malloc(w*h*sizeof(Pixel));
   }
 
   Vec3f& Film::pixel(uint32 x, uint32 y)
   {
-    return *(data + x + y*w);
+    return (data + x + y*w)->xyz;
   }
 
   void Film::clear()
   {
-    memset(data, 0, w*h*sizeof(Vec3f));
+    memset(data, 0, w*h*sizeof(Pixel));
   }
 
   int toInt(float x)
@@ -45,13 +46,17 @@ namespace ink
   {
     FILE *f = fopen(filepath, "w"); // Write image to PPM file. 
     if (!f)
+    {    
+      INK_LOG_ERROR("Film", "Can't open file: " << filepath);
       return false;
+    }
 
     fprintf(f, "P3\n%d %d\n%d\n", w, h, 255);
 
     for (uint32 i = 0; i < w*h; i++)
-      fprintf(f, "%d %d %d ", toInt(data[i].x), toInt(data[i].y), toInt(data[i].z));
+      fprintf(f, "%d %d %d ", toInt(data[i].xyz.x), toInt(data[i].xyz.y), toInt(data[i].xyz.z));
 
+    INK_LOG_INFO("Film", "Result saved: " << filepath);
     return true;
   }
 

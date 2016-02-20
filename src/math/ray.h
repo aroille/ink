@@ -11,7 +11,6 @@ namespace ink
   {
     Point3f o;      // origin
     Vec3f   d;      // direction
-    float   time;
     uint32  depth;
   };
 
@@ -23,6 +22,14 @@ namespace ink
     Normal3f        n;            // surface normal
     float           distance_sq;  // squared distance from ray origin
     const Instance* instance;
+
+    void reset()
+    {
+      p = Point3f(0, 0, 0);
+      n = Normal3f(0, 0, 0);
+      distance_sq = FLT_MAX;
+      instance = nullptr;
+    }
   };
 
 } // namespace ink

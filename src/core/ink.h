@@ -16,6 +16,7 @@
 #include <cmath>
 #include <cstring>
 #include <utility>
+#include <limits>
 
 // common types
 typedef std::int8_t    int8;
@@ -48,9 +49,24 @@ namespace ink
     return (in < min ? min : (in > max ? max : in));
   }
 
-  inline bool  near_equal(float a, float b, float delta = ink::delta)
+  inline bool near_equal(float a, float b, float delta = ink::delta)
   {
     return (std::abs(a - b) > delta ? false : true);
+  }
+
+  inline float max(float a, float b)
+  {
+    return a >= b ? a : b;
+  }
+
+  inline float min(float a, float b)
+  {
+    return a <= b ? a : b;
+  }
+
+  inline float abs(float x)
+  {
+    return std::fabs(x);
   }
 
   inline float radians(float deg)
