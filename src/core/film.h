@@ -5,9 +5,7 @@
 
 namespace ink
 {
- 
-
-  class INK_API Film
+  class Film
   {
   public:
     Film();

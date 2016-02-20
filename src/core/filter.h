@@ -4,7 +4,7 @@
 
 namespace ink
 {
-  class INK_API Filter
+  class Filter
   {
   public:
     Filter(float xw, float yw) : x_width(xw), y_width(yw) {}
@@ -15,7 +15,7 @@ namespace ink
     float y_width;
   };
 
-  class INK_API BoxFilter : public Filter
+  class BoxFilter : public Filter
   {
   public:
     BoxFilter(float xw, float yw) : Filter(xw, yw) {}
@@ -26,7 +26,7 @@ namespace ink
     }
   };
 
-  class INK_API TriangleFilter : public Filter
+  class TriangleFilter : public Filter
   {
   public:
     TriangleFilter(float xw, float yw) : Filter(xw, yw) {}
@@ -37,7 +37,7 @@ namespace ink
     }
   };
 
-  class INK_API GaussianFilter : public Filter
+  class GaussianFilter : public Filter
   {
   public:
     GaussianFilter(float xw, float yw, float a) 

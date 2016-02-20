@@ -24,13 +24,13 @@ namespace ink
     Transform raster_to_camera;
   };
 
-  struct INK_API Camera
+  struct ICamera
   {
     virtual void generate_ray(uint32 x, uint32 y, Ray& ray, Point3f& raster_coord, RandomGenerator& gen) = 0;
     virtual void update(const Film&) = 0;
   };
 
-  struct INK_API PinholeCamera : public Camera
+  struct PinholeCamera : public ICamera
   {
     float             fov;        // field of view (in degrees) 
     Transform         transform;  // (world space)
@@ -39,8 +39,8 @@ namespace ink
     ProjectionMatrix  proj;
 
   public:
-    virtual void generate_ray(uint32 x, uint32 y, Ray& ray, Point3f& raster_coord, RandomGenerator& gen);
-    virtual void update(const Film&);
+    virtual void generate_ray(uint32 x, uint32 y, Ray& ray, Point3f& raster_coord, RandomGenerator& gen) override;
+    virtual void update(const Film&) override;
   };
 
 

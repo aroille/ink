@@ -6,7 +6,7 @@
 
 namespace ink
 {
-  class INK_API RandomGenerator
+  class RandomGenerator
   {
   public:
     RandomGenerator(float min, float max)

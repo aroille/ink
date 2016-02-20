@@ -7,7 +7,7 @@
 
 namespace ink
 {
-  struct INK_API Matrix4x4
+  struct Matrix4x4
   {
     // Attributes
     float m[4][4];
@@ -36,7 +36,7 @@ namespace ink
     }
   };
 
-  class INK_API Transform
+  class Transform
   {
   public:
     Transform() {}
@@ -62,20 +62,20 @@ namespace ink
 
     inline Ray        operator()(const Ray&) const;
 
-    INK_API friend Transform inverse(const Transform& t);
-    INK_API friend Transform transpose(const Transform& t);
+    friend Transform inverse(const Transform& t);
+    friend Transform transpose(const Transform& t);
 
   private:
     Matrix4x4 m;
     Matrix4x4 m_inv;
   };
 
-  INK_API Transform translate(float x, float y, float z);
-  INK_API Transform scale(float x, float y, float z);
-  INK_API Transform rotate_x(float theta);
-  INK_API Transform rotate_y(float theta);
-  INK_API Transform rotate_z(float theta);
-  INK_API Transform look_at(const Point3f& pos, const Point3f& target, const Vec3f& up);
+  Transform translate(float x, float y, float z);
+  Transform scale(float x, float y, float z);
+  Transform rotate_x(float theta);
+  Transform rotate_y(float theta);
+  Transform rotate_z(float theta);
+  Transform look_at(const Point3f& pos, const Point3f& target, const Vec3f& up);
 
   //================================================================================
   template <typename T>

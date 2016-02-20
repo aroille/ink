@@ -1,16 +1,5 @@
 #pragma once
 
-// Macro for dll export/import on windows
-#ifdef _MSC_VER
-#ifdef INK_EXPORT
-#define INK_API __declspec(dllexport)
-#else
-#define INK_API __declspec(dllimport)
-#endif
-#else
-#define INK_API
-#endif
-
 // global includes
 #include <cstdint>
 #include <cmath>

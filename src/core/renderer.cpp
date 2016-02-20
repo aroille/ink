@@ -1,6 +1,7 @@
 #include "core/renderer.h"
 #include "core/filter.h"
 #include "math/random.h"
+#include "core/shape.h"
 #include "core/log.h"
 
 namespace ink
