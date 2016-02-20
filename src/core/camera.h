@@ -7,22 +7,11 @@
 namespace ink
 {
   class RandomGenerator;
+  class Film;
 
-  class INK_API Camera
+
+  struct ProjectionMatrix
   {
-  public:
-    Camera();
-    void      generate_ray(uint32 x, uint32 y, Ray& ray, RandomGenerator& gen);
-    void      update_transforms();
-
-  public:
-    float     fov;
-    Transform transform;
-    uint32    film_width;
-    uint32    film_height;
-    float     screen_window[4];
-
-  public:
     Transform world_to_camera;
     Transform camera_to_world;
 
@@ -34,6 +23,26 @@ namespace ink
 
     Transform raster_to_camera;
   };
+
+  struct INK_API Camera
+  {
+    virtual void generate_ray(uint32 x, uint32 y, Ray& ray, Point3f& raster_coord, RandomGenerator& gen) = 0;
+    virtual void update(const Film&) = 0;
+  };
+
+  struct INK_API PinholeCamera : public Camera
+  {
+    float             fov;
+    Transform         transform;
+
+  private:
+    ProjectionMatrix  proj;
+
+  public:
+    virtual void generate_ray(uint32 x, uint32 y, Ray& ray, Point3f& raster_coord, RandomGenerator& gen);
+    virtual void update(const Film&);
+  };
+
 
 }	// namespace ink
 
