@@ -19,30 +19,22 @@ namespace ink
     Transform world_to_object;
     Shape*    shape;
     Vec3f     color;
-
-    bool intersect(const Ray& ray, RayHit& hit) const;
   };
 
-  class INK_API Renderer
+  struct INK_API Scene
   {
-  public:
-
-    Renderer();
-    ~Renderer();
-
-    void add_instance(Shape* shape, const Transform& tf, const Vec3f& color);
-    void render(uint32 spp = 1);
-
-  protected:
-    bool intersect_world(const Ray& ray, RayHit& hit);
-
-  public:
-    PinholeCamera camera;
-    Film film;
-
-  private:
     std::vector<Instance> instances;
+
+    void add(Shape* shape, const Transform& tf, const Vec3f& color);
   };
 
+  struct INK_API Renderer
+  {
+    PinholeCamera camera;
+    Film          film;
+    Scene         scene;
+
+    void render(uint32 spp = 1);
+  };
 }    // namespace ink
 

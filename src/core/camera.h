@@ -32,8 +32,8 @@ namespace ink
 
   struct INK_API PinholeCamera : public Camera
   {
-    float             fov;
-    Transform         transform;
+    float             fov;        // field of view (in degrees) 
+    Transform         transform;  // (world space)
 
   private:
     ProjectionMatrix  proj;

@@ -7,15 +7,17 @@ namespace ink
 {
   void PinholeCamera::generate_ray(uint32 x, uint32 y, Ray& ray, Point3f& raster_coord, RandomGenerator& gen)
   {
+    // Random raster position
     raster_coord.x = x + gen();
     raster_coord.y = y + gen();
     raster_coord.z = 0.0;
 
+    // Ray in camera space
     Ray r;
     r.o = Point3f(0, 0, 0);
     r.d = Vec3f(proj.raster_to_camera(raster_coord));
-    r.depth = 0;
 
+    // Ray in world space
     ray = proj.camera_to_world(r);
     ray.d = normalize(ray.d);
   }

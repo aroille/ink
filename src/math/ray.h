@@ -7,29 +7,28 @@
 
 namespace ink
 {
+  struct Instance;
+
   struct Ray
   {
     Point3f o;      // origin
     Vec3f   d;      // direction
-    uint32  depth;
   };
-
-  struct Instance;
 
   struct RayHit
   {
-    Point3f         p;            // position
-    Normal3f        n;            // surface normal
+    Point3f         p;            // hit point position
+    Normal3f        n;            // hit point surface normal
     float           distance_sq;  // squared distance from ray origin
-    const Instance* instance;
-
-    void reset()
-    {
-      p = Point3f(0, 0, 0);
-      n = Normal3f(0, 0, 0);
-      distance_sq = FLT_MAX;
-      instance = nullptr;
-    }
+    const Instance* instance;     // instance hit
   };
+
+  inline void reset(RayHit& hit)
+  {
+    hit.p = Point3f(0, 0, 0);
+    hit.n = Normal3f(0, 0, 0);
+    hit.distance_sq = FLT_MAX;
+    hit.instance = nullptr;
+  }
 
 } // namespace ink

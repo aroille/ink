@@ -47,7 +47,7 @@ namespace ink
     FILE *f = fopen(filepath, "w"); // Write image to PPM file. 
     if (!f)
     {    
-      INK_LOG_ERROR("Film", "Can't open file: " << filepath);
+      INK_LOG_ERROR("Can't open file: " << filepath);
       return false;
     }
 
@@ -56,7 +56,7 @@ namespace ink
     for (uint32 i = 0; i < w*h; i++)
       fprintf(f, "%d %d %d ", toInt(data[i].xyz.x), toInt(data[i].xyz.y), toInt(data[i].xyz.z));
 
-    INK_LOG_INFO("Film", "Result saved: " << filepath);
+    INK_LOG_INFO("Result saved: " << filepath);
     return true;
   }
 

@@ -1,34 +1,44 @@
 #include "core/renderer.h"
 #include "core/filter.h"
 #include "math/random.h"
+#include "core/log.h"
 
 namespace ink
-{
-  bool Instance::intersect(const Ray& ray, RayHit& hit) const
+{ 
+  bool intersect(const Instance& instance, const Ray& ray, RayHit& hit)
   {
     RayHit object_hit;
-    Ray object_ray = world_to_object(ray);
+    Ray object_ray = instance.world_to_object(ray);
 
-    if (shape->intersect(object_ray, object_hit))
+    if (instance.shape->intersect(object_ray, object_hit))
     {
-      hit.p = object_to_world(object_hit.p);
-      hit.n = normalize(object_to_world(object_hit.n));
+      hit.p = instance.object_to_world(object_hit.p);
+      hit.n = normalize(instance.object_to_world(object_hit.n));
       hit.distance_sq = distance_squared(ray.o, hit.p);
-      hit.instance = this;
+      hit.instance = &instance;
       return true;
     }
     return false;
   }
 
-  Renderer::Renderer()
+  bool intersect(const Scene& scene, const Ray& ray, RayHit& hit)
   {
-  }
+    reset(hit);
 
-  Renderer::~Renderer()
-  {
+    for (uint32 i = 0; i < scene.instances.size(); i++)
+    {
+      RayHit inst_hit;
+      const Instance& instance = scene.instances[i];
+      if (intersect(instance, ray, inst_hit))
+      {
+        if (inst_hit.distance_sq < hit.distance_sq)
+          hit = inst_hit;
+      }
+    }
+
+    return (hit.instance != nullptr);
   }
-  
-  void Renderer::add_instance(Shape* shape, const Transform& tf, const Vec3f& color)
+  void Scene::add(Shape* shape, const Transform& tf, const Vec3f& color)
   {
     Instance inst;
     inst.shape = shape;
@@ -39,26 +49,10 @@ namespace ink
     instances.push_back(inst);
   }
 
-  bool Renderer::intersect_world(const Ray& ray, RayHit& hit)
-  {
-    hit.reset();
-
-    for (uint32 i = 0; i < instances.size(); i++)
-    {
-      RayHit inst_hit;
-      Instance& instance = instances[i];
-      if (instance.intersect(ray, inst_hit))
-      {
-        if (inst_hit.distance_sq < hit.distance_sq)
-          hit = inst_hit;
-      }
-    }
-
-    return (hit.instance != nullptr);
-  }
-
   void Renderer::render(uint32 spp)
   {
+    INK_LOG_INFO("Start render");
+
     camera.update(film);
     film.clear();
 
@@ -84,7 +78,7 @@ namespace ink
           camera.generate_ray(x, y, prim_ray, raster_coord, generator);
           float w = filter.eval(x - raster_coord.x, y - raster_coord.y);
           
-          if (intersect_world(prim_ray, prim_hit))
+          if (intersect(scene, prim_ray, prim_hit))
           {
             Vec3f prim_radiance = prim_hit.instance->color * dot(-prim_ray.d, prim_hit.n);
 
@@ -114,6 +108,8 @@ namespace ink
         
       }
     }
+
+    INK_LOG_INFO("Render complete");
   }
 
 }	// namespace ink
