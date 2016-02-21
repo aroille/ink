@@ -3,7 +3,6 @@
 #include "core/ink.h"
 #include "core/camera.h"
 #include "core/film.h"
-#include "core/shape.h"
 #include "math/transform.h"
 
 #include <vector>

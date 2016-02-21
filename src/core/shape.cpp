@@ -1,5 +1,6 @@
 
 #include "core/shape.h"
+#include "math/geometry.h"
 
 namespace ink
 {

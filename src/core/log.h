@@ -1,8 +1,6 @@
 #pragma once
 
 #include "ink.h"
-
-#include <cstdarg>
 #include <sstream>
 
 #define INK_LOG(level, msg) { \

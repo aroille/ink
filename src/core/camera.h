@@ -1,14 +1,14 @@
 #pragma once
 
 #include "core/ink.h"
-#include "math/geometry.h"
-#include <random>
+#include "math/transform.h"
+#include "math/point.h"
+#include "math/ray.h"
 
 namespace ink
 {
   class RandomGenerator;
   class Film;
-
 
   struct ProjectionMatrix
   {
