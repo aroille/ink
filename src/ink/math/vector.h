@@ -34,6 +34,7 @@ namespace ink
     Vector3<T>  operator+(Vector3<T> const& in) const;
     Vector3<T>  operator-(Vector3<T> const& in) const;
     Vector3<T>  operator*(T f) const;
+    Vector3<T>  operator*(Vector3<T> const& in) const;
     Vector3<T>  operator/(T f) const;
 
     Vector3<T>& operator+=(Vector3<T> const& in);
@@ -101,6 +102,13 @@ namespace ink
   inline Vector3<T> Vector3<T>::operator*(T f) const
   {
     return Vector3<T>(x * f, y * f, z * f);
+  }
+
+  //================================================================================
+  template <typename T>
+  inline Vector3<T> Vector3<T>::operator*(Vector3<T> const& in) const
+  {
+    return Vector3<T>(x * in.x, y * in.y, z * in.z);
   }
 
   //================================================================================

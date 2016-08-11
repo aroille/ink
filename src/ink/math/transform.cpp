@@ -242,4 +242,9 @@ namespace ink
     return Transform(m);
   }
 
+  Transform camera_look_at(const Point3f& pos, const Point3f& target, const Vec3f& up)
+  {
+    return look_at(pos, pos-(target-pos), up);
+  }
+
 } // namespace ink

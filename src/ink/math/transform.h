@@ -76,6 +76,7 @@ namespace ink
   Transform rotate_y(float theta);
   Transform rotate_z(float theta);
   Transform look_at(const Point3f& pos, const Point3f& target, const Vec3f& up);
+  Transform camera_look_at(const Point3f& pos, const Point3f& target, const Vec3f& up);
 
   //================================================================================
   template <typename T>

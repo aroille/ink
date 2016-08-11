@@ -13,22 +13,27 @@ namespace ink
   {
     Point3f o;      // origin
     Vec3f   d;      // direction
+    //float   tmin;
+    //float   tmax;
   };
 
   struct RayHit
   {
-    Point3f         p;            // hit point position
+    float           t;            // hit point position
+    float           epsilon;
     Normal3f        n;            // hit point surface normal
-    float           distance_sq;  // squared distance from ray origin
     const Instance* instance;     // instance hit
+
+    inline void reset()
+    {
+      t = FLT_MAX;
+      epsilon = 0;
+      n = Normal3f(0, 0, 0);
+      instance = nullptr;
+    };
+
   };
 
-  inline void reset(RayHit& hit)
-  {
-    hit.p = Point3f(0, 0, 0);
-    hit.n = Normal3f(0, 0, 0);
-    hit.distance_sq = FLT_MAX;
-    hit.instance = nullptr;
-  }
+  
 
 } // namespace ink

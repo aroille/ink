@@ -1,4 +1,4 @@
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../ink)
 
 add_executable(sandbox sandbox.cpp)
 target_link_libraries(sandbox ink)

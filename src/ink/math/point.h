@@ -10,6 +10,7 @@ namespace ink
   {
     // Attributes
     T x, y, z;
+    int w;
 
     // Static constants
     static const Point3<T> zero;

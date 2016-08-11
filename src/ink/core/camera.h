@@ -10,6 +10,12 @@ namespace ink
   class RandomGenerator;
   class Film;
 
+  struct ICamera
+  {
+    virtual void generate_ray(uint32 x, uint32 y, Ray& ray, Point3f& raster_coord, RandomGenerator& gen) = 0;
+    virtual void update(const Film&) = 0;
+  };
+
   struct ProjectionMatrix
   {
     Transform world_to_camera;
@@ -22,12 +28,6 @@ namespace ink
     Transform raster_to_screen;
 
     Transform raster_to_camera;
-  };
-
-  struct ICamera
-  {
-    virtual void generate_ray(uint32 x, uint32 y, Ray& ray, Point3f& raster_coord, RandomGenerator& gen) = 0;
-    virtual void update(const Film&) = 0;
   };
 
   struct PinholeCamera : public ICamera

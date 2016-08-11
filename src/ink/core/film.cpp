@@ -39,7 +39,8 @@ namespace ink
 
   int toInt(float x)
   {
-    return int(pow(clamp(x), 1 / 2.2) * 255 + .5);
+    //return int(pow(clamp(x), 1 / 2.2) * 255 + .5);
+    return int(clamp(x) * 255 + .5);
   }
 
   bool Film::save(const char* filepath) const
@@ -55,6 +56,8 @@ namespace ink
 
     for (uint32 i = 0; i < w*h; i++)
       fprintf(f, "%d %d %d ", toInt(data[i].xyz.x), toInt(data[i].xyz.y), toInt(data[i].xyz.z));
+
+    fclose(f);
 
     INK_LOG_INFO("Result saved: " << filepath);
     return true;
