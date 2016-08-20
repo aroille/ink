@@ -12,8 +12,8 @@ namespace ink
     Film(uint32 width, uint32 height);
     ~Film();
 
-    uint32  width() const  { return w; }
-    uint32  height() const { return h; }
+    inline uint32  width() const  { return w; }
+    inline uint32  height() const { return h; }
 
     void    resize(uint32 width, uint32 height);
     void    clear();

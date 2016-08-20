@@ -1,6 +1,6 @@
 
 #include "core/camera.h"
-#include "core/renderer.h"
+#include "core/inkrenderer.h"
 #include "core/shape.h"
 #include "core/material.h"
 #include "math/geometry.h"
@@ -15,11 +15,12 @@ int main(int, char**)
   InkRenderer ink;
 
   RenderSettings settings;
-  settings.res_x = 150*4;
-  settings.res_y = 150*4;
-  settings.spp = 2048*4;
-  settings.max_bounce = 6;
+  settings.res_x = 150*3;
+  settings.res_y = 150*3;
+  settings.spp = 2048*2;
+  settings.max_bounce = 3;
   settings.background_color = Vec3f(0.8, 0.9, 1.0);
+  settings.threads = 0;
 
   // Generate scene
   PinholeCamera camera;
