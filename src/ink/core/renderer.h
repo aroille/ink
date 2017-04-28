@@ -1,50 +1,60 @@
 #pragma once
 
-#include "core/ink.h"
-#include "core/camera.h"
-#include "core/film.h"
-#include "core/scene.h"
-#include "core/settings.h"
-#include "math/transform.h"
+#include "math/common.h"
 #include "math/random.h"
-
-#include <vector>
-#include <thread>
-#include <condition_variable>
+#include "math/vector.h"
+#include <atomic>
 
 namespace ink
 {
-  struct Shape;
-  class Material;
+  class Camera;
+  class Film;
   class Filter;
+  struct Scene;
+  struct Ray;
 
-  class Renderer
+  class Integrator
   {
   public:
-    Renderer(const Scene& scene, Film& film);
-    Renderer(const Renderer&) = delete;
-    Renderer& operator=(const Renderer&) { return *this;  }
+    virtual Vec3f radiance(const Ray& ray, RandomGenerator& gen) const = 0;
+    Scene* scene;
+  };
 
-    void          prepare(const RenderSettings& settings);
-    void          render(const PinholeCamera& camera);
-    void          renderTask(uint32 thread_id);
+  class SimpleIntegrator : public Integrator
+  {
+  public:
+    virtual Vec3f radiance(const Ray& ray, RandomGenerator& gen) const ;
+  };
+
+  class SimpleRenderer
+  {
+  public:
+    uint32 spp = 1; // sample per pixel
+    uint32 tile_size = 16;
+
+  public:
+    SimpleRenderer();
+    ~SimpleRenderer();
+    void start(Integrator& integrator, Scene& scene, Camera& camera, Film& film);
 
   private:
-    Vec3f         integrator(const Ray& ray, RandomGenerator& gen, int remaining_bounce, bool primary = true) const;
+    void thread_task();
 
-    const Scene&            scene;
-    SceneRT                 scene_rt;
+  private:
 
-    Film&                   film;
-    PinholeCamera           camera;
-    Filter*                 filter;
+    Integrator* integrator;
+    Filter*     filter;
+    Scene*      scene;
+    Camera*     camera;
+    Film*       film;
 
-    // rnd
-    RandomGenerator         prim_generator;
-    RandomGenerator         diffuse_generator;
+    RandomGenerator prim_generator;
+    RandomGenerator diffuse_generator;
 
-    // settings
-    RenderSettings          settings;
+    uint32 tile_count;
+    uint32 tile_count_x;
+    uint32 tile_count_y;
+    std::atomic_int32_t next_tile;
   };
 
 }    // namespace ink

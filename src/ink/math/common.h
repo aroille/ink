@@ -1,11 +1,9 @@
 #pragma once
 
-// global includes
+#include <float.h>
 #include <cstdint>
 #include <cmath>
 #include <cstring>
-#include <utility>
-#include <limits>
 
 // common types
 typedef std::int8_t    int8;
@@ -19,14 +17,17 @@ typedef std::uint64_t	 uint64;
 
 namespace ink
 {
-
   // Useful mathematical const
   static const float Pi = 3.1415926535897932f;
   static const float inv_Pi = 0.31830988618f;
   static const float half_Pi = 1.57079632679f;
-  // Magic numbers for numerical precision
-  static const float delta = 0.00001f;
+  static const float delta = 0.00001f; // Magic numbers for numerical precision
 
+
+  inline float abs(float x)
+  {
+    return std::fabs(x);
+  }
 
   inline float lerp(float a, float b, float value)
   {
@@ -40,7 +41,7 @@ namespace ink
 
   inline bool near_equal(float a, float b, float delta = ink::delta)
   {
-    return (std::abs(a - b) > delta ? false : true);
+    return (abs(a - b) > delta ? false : true);
   }
 
   inline float max(float a, float b)
@@ -53,14 +54,32 @@ namespace ink
     return a <= b ? a : b;
   }
 
-  inline float abs(float x)
-  {
-    return std::fabs(x);
-  }
-
   inline float radians(float deg)
   {
     return Pi * deg / 180.0f;
+  }
+
+  inline bool quadratic(float A, float B, float C, float& t0, float& t1)
+  {
+    float discrim = B*B - 4 * A*C;
+    if (discrim <= 0)
+      return false;
+
+    float root_discrim = sqrtf(discrim);
+
+    float q;
+    if (B < 0)	q = -0.5 * (B - root_discrim);
+    else				q = -0.5 * (B + root_discrim);
+    t0 = q / A;
+    t1 = C / q;
+
+    if (t0 > t1)
+    {
+      float t = t0;
+      t0 = t1;
+      t1 = t;
+    }
+    return true;
   }
 
 } // namespace ink

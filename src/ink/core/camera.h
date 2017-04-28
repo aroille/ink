@@ -1,37 +1,36 @@
 #pragma once
 
-#include "core/ink.h"
 #include "math/transform.h"
-#include "math/point.h"
-#include "math/ray.h"
 
 namespace ink
 {
   class RandomGenerator;
-  class Film;
+  struct Ray;
 
-  struct ICamera
+  class Camera
   {
-    virtual void generate_ray(uint32 x, uint32 y, Ray& ray, Point3f& raster_coord, RandomGenerator& gen) = 0;
-    virtual void update(const Film&) = 0;
+  public:
+    virtual void generate_ray(uint32 x, uint32 y, Ray& ray, Vec3f& raster_coord, RandomGenerator& gen) = 0;
+    virtual void update(uint32 film_width, uint32 film_height) = 0;
   };
 
   struct ProjectionMatrix
   {
-    Transform world_to_camera;
-    Transform camera_to_world;
+    Matrix4x4 world_to_camera;
+    Matrix4x4 camera_to_world;
 
-    Transform	camera_to_screen;
-    Transform screen_to_camera;
+    Matrix4x4	camera_to_screen;
+    Matrix4x4 screen_to_camera;
 
-    Transform screen_to_raster;
-    Transform raster_to_screen;
+    Matrix4x4 screen_to_raster;
+    Matrix4x4 raster_to_screen;
 
-    Transform raster_to_camera;
+    Matrix4x4 raster_to_camera;
   };
 
-  struct PinholeCamera : public ICamera
+  class PinholeCamera : public Camera
   {
+  public:
     float             fov;        // field of view (in degrees) 
     Transform         transform;  // (world space)
 
@@ -39,8 +38,8 @@ namespace ink
     ProjectionMatrix  proj;
 
   public:
-    virtual void generate_ray(uint32 x, uint32 y, Ray& ray, Point3f& raster_coord, RandomGenerator& gen) override;
-    virtual void update(const Film&) override;
+    virtual void generate_ray(uint32 x, uint32 y, Ray& ray, Vec3f& raster_coord, RandomGenerator& gen) override;
+    virtual void update(uint32 film_width, uint32 film_height) override;
   };
 
 

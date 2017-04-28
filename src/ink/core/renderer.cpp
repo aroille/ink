@@ -1,95 +1,107 @@
 #include "core/renderer.h"
-#include "core/inkrenderer.h"
 #include "core/filter.h"
-#include "core/material.h"
-#include "core/shape.h"
-#include "core/log.h"
+#include "core/scene.h"
+#include "core/film.h"
+#include "core/camera.h"
+#include "math/ray.h"
+
+#include <omp.h>
 
 namespace ink
 { 
-  Renderer::Renderer(const Scene& scene, Film& film)
-    : scene(scene)
-    , film(film)
-    , filter(nullptr) 
+  SimpleRenderer::SimpleRenderer()
+    : filter(new TriangleFilter(0.5, 0.5)) 
     , prim_generator(-0.5, 0.5)
     , diffuse_generator(-1.0, 1.0)
   {
-  
   }
 
-  void Renderer::prepare(const RenderSettings& s)
+  SimpleRenderer::~SimpleRenderer()
   {
-    // copy settings
-    settings = s;
-
-    // create reconstruction filter
-    if (!filter)
-      filter = new TriangleFilter(0.5, 0.5);
-
-    // construct ray traversal acceleration structure
-    scene_rt.prepare(&scene);
+    free(filter);
   }
 
-  void Renderer::render(const PinholeCamera& cam)
+  void SimpleRenderer::start(Integrator& integrator, Scene& scene, Camera& camera, Film& film)
   {
-    // copy camera
-    camera = cam;
+    this->integrator = &integrator;
+    this->scene = &scene;
+    this->camera = &camera;
+    this->film = &film;
 
-    // start render threads
-    RenderThread::start();
+    this->integrator->scene = this->scene;
 
-    // wait for completion
-    RenderThread::wait();
-  }
+    // start render
+    tile_count_x = (film.width() + tile_size - 1) / tile_size;
+    tile_count_y = (film.height() + tile_size - 1) / tile_size;
+    tile_count = tile_count_x * tile_count_y;
 
-  void Renderer::renderTask(uint32 thread_id)
-  {
-    if (thread_id >= settings.threads)
-      return;
-
-    // generate 'spp' rays per pixel + compute and filter the radiance allow these rays
-    for (uint32 y = thread_id; y < film.height(); y += settings.threads)
+    next_tile = 0;
+    #pragma omp parallel
     {
-      for (uint32 x = 0; x < film.width(); x++)
+      thread_task();
+    }
+  }
+
+  void SimpleRenderer::thread_task()
+  {
+    while (true)
+    {
+      uint32 tile_id = next_tile++;
+      if (tile_id >= tile_count)
+        break;
+
+      // get limits of the tile
+      uint32 tile_y = tile_id / tile_count_x;
+      uint32 y_min = tile_y * tile_size;
+      uint32 y_max = min((tile_y + 1) * tile_size, film->height());
+
+      uint32 tile_x = tile_id % tile_count_x;
+      uint32 x_min = tile_x * tile_size;
+      uint32 x_max = min((tile_x + 1) * tile_size, film->width());
+
+      for (uint32 y = y_min; y < y_max; ++y)
       {
-        Vec3f radiance = Vec3f::zero;
-        float weigth = 0.0f;
-        for (uint32 s = 0; s < settings.spp; s++)
+        for (uint32 x = x_min; x < x_max; ++x)
         {
-          Ray     ray;
-          Point3f raster_coord;
-          camera.generate_ray(x, y, ray, raster_coord, prim_generator);
+          Vec3f radiance = Vec3f::zero;
+          float weigth = 0.0f;
+          for (uint32 s = 0; s < spp; ++s)
+          {
+            Ray   ray;
+            Vec3f raster_coord;
+            camera->generate_ray(x, y, ray, raster_coord, prim_generator);
 
-          float w = filter->eval(x - raster_coord.x, y - raster_coord.y);
-          radiance += integrator(ray, diffuse_generator, settings.max_bounce, true) * w;
-          weigth += w;
+            float w = filter->eval(x - raster_coord.x, y - raster_coord.y);
+            radiance += integrator->radiance(ray, diffuse_generator) * w;
+            weigth += w;
+          }
+
+          if (weigth > 0)
+            film->accumulate(x, y, radiance / weigth);
+          else
+            film->accumulate(x, y, Vec3f::zero);
         }
-
-        if (weigth>0)
-          film.pixel(x, y) = radiance / weigth;
-        else
-          film.pixel(x, y) = Vec3f::zero;
       }
     }
   }
 
-  /*
-  Vec3f Renderer::integrator(const Ray& ray, RandomGenerator&, int) const
+  Vec3f SimpleIntegrator::radiance(const Ray& ray, RandomGenerator&) const
   {
+    int thread_id = omp_get_thread_num();
+    return Vec3f((float)thread_id/7.f, 0, 0);
+
     RayHit hit;
-    if (scene_rt.intersect(ray, hit))
+    if (intersect(*scene, ray, hit))
     {
-      return Vec3f(1,0,0);
+      return Vec3f(1, 0, 0);
     }
     else
     {
-      float t = 0.5f * (ray.d.y + 1.0f);
-      return (1 - t) * Vec3f::one + t * Vec3f(0.5, 0.7, 1.0);
+      return Vec3f(0, 0, 0);
+      //float t = 0.5f * (ray.d.y + 1.0f);
+      //return (1 - t) * Vec3f::one + t * Vec3f(0.5, 0.7, 1.0);
     }
-
-
   }
-  */
 
   /*
   Vec3f Renderer::integrator(const Ray& ray, RandomGenerator&, int remaining_bounce) const
@@ -102,20 +114,19 @@ namespace ink
   }
   */
   
-  Vec3f Renderer::integrator(const Ray& ray, RandomGenerator& gen, int remaining_bounce, bool primary) const
+  /*
+  Vec3f SimpleIntegrator::radiance(const Ray& ray, RandomGenerator& gen, int remaining_bounce, bool primary) const
   {
-    RayHit hit;
-    uint32 visibility = primary ? VIS_PRIMARY : 0;
-
     if (remaining_bounce == 0)
       return Vec3f::zero;
 
-    if (scene_rt.intersect(ray, visibility, hit))
+    RayHit hit;
+    if (scene_rt.intersect(ray, hit))
     {
       Ray new_ray;
       Vec3f attenuation;
 
-      Material* material = scene.materials[hit.instance->mat_id];
+      Material* material = scene.materials[scene.instances[hit.instance_id].material_id].get();
       material->scatter(ray, hit, new_ray, attenuation, gen);
 
       return integrator(new_ray, gen, remaining_bounce - 1, false) * attenuation + material->emission;
@@ -125,5 +136,8 @@ namespace ink
       return settings.background_color;
     }
   }
+  */
+
+
 }	// namespace ink
 

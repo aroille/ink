@@ -1,11 +1,9 @@
 #pragma once
 
 #include "core/log.h"
-#include "core/ink.h"
 
 #include <ctime>
 #include <cstdio>
-#include <cstring>
 #include <iostream>
 
 #ifdef  _MSC_VER
@@ -16,7 +14,7 @@ namespace ink
 {
   const Log Log::instance;
 
-  char LogLevelString[(uint32)Log::Level::Count][8] =
+  char LogLevelString[(unsigned)Log::Level::Count][8] =
   {
     "DEBUG",
     "INFO",

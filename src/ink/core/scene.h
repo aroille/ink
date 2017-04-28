@@ -1,54 +1,38 @@
 #pragma once
 
-#include "core/ink.h"
-#include "math/transform.h"
 #include <vector>
+#include "math/common.h"
+#include "math/transform.h"
 
 namespace ink
 {
-  struct Shape;
+  class Shape;
   class Material;
-
-  typedef uint32 ShapeId;
-  typedef uint32 MaterialId;
-  typedef uint32 InstanceId;
-
-  struct Scene
-  {
-    std::vector<Shape*>     shapes;
-    std::vector<Material*>  materials;
-    std::vector<Instance>   instances;
-  };
-
-
-  // TODO: implement bvh (or use embree)
-  class SceneRT
-  {
-  public:
-    void prepare(const Scene* s) { scene = s; }
-    bool intersect(const Ray& ray, uint32 visibility, RayHit& hit) const; // TODO: implement bvh (or use embree)
-
-  private:
-    const Scene* scene;
-  };
-
-  enum Visibility
-  {
-    VIS_PRIMARY = 1,
-    VIS_ALL = VIS_PRIMARY
-  };
+  class Camera;
 
   struct Instance
   {
-    Transform   object_to_world;
-    Transform   world_to_object;
-    uint32      flags;
-    uint32      shape_id;
-    uint32      mat_id;
-    uint32      vis;
+    Matrix4x4 object_to_world;
+    Matrix4x4 world_to_object;
+    uint32    shape_id;
+    uint32    material_id;
 
-    bool intersect(const Scene& scene, const Ray& ray, RayHit& hit) const;
+    Instance() {};
+    Instance(uint32 shape, uint32 material, const Transform& transform)
+      : object_to_world(transform.matrix())
+      , world_to_object(transform.inverse_matrix())
+      , shape_id(shape)
+      , material_id(material) {};
   };
+
+  struct Scene
+  {
+    std::vector<Shape*>    shapes;
+    std::vector<Material*> materials;
+    std::vector<Instance>  instances;
+  };
+
+  bool intersect(const Scene& scene, const Ray& ray, RayHit& hit);
 
 }    // namespace ink
 

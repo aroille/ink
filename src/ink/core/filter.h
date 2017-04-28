@@ -1,7 +1,5 @@
 #pragma once
 
-#include "core/ink.h"
-
 namespace ink
 {
   class Filter

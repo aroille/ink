@@ -3,47 +3,36 @@
 
 namespace ink
 {
-  Film::Film()
-    : data(nullptr), w(0), h(0)
-  {}
-
   Film::~Film()
   {
     free(data);
   }
 
   Film::Film(uint32 width, uint32 height)
-    : data(nullptr), w(0), h(0)
+    : w(width), h(height)
   {
-    resize(width, height);
+    data = (Vec3f*)malloc(w*h*sizeof(Vec3f));
   }
 
-  void Film::resize(uint32 width, uint32 height)
+  void Film::accumulate(uint32 x, uint32 y, Vec3f value)
   {
-    w = width;
-    h = height;
-
-    free(data);
-    data = (Pixel*)malloc(w*h*sizeof(Pixel));
-  }
-
-  Vec3f& Film::pixel(uint32 x, uint32 y)
-  {
-    return (data + x + y*w)->xyz;
+    *(data + x + y*w) = value;
   }
 
   void Film::clear()
   {
-    memset(data, 0, w*h*sizeof(Pixel));
+    memset(data, 0, w*h*sizeof(Vec3f));
   }
+\
 
-  int toInt(float x)
+
+  static int to_int(float x)
   {
     //return int(pow(clamp(x), 1 / 2.2) * 255 + .5);
     return int(clamp(x) * 255 + .5);
   }
 
-  bool Film::save(const char* filepath) const
+  bool saveImage(const Film& film, const char* filepath)
   {
     FILE *f = fopen(filepath, "w"); // Write image to PPM file. 
     if (!f)
@@ -52,10 +41,14 @@ namespace ink
       return false;
     }
 
+    uint32 w = film.width();
+    uint32 h = film.height();
+    const Vec3f* data = film.data_ptr();
+
     fprintf(f, "P3\n%d %d\n%d\n", w, h, 255);
 
-    for (uint32 i = 0; i < w*h; i++)
-      fprintf(f, "%d %d %d ", toInt(data[i].xyz.x), toInt(data[i].xyz.y), toInt(data[i].xyz.z));
+    for (uint32 i = 0, pixel_count = w*h; i < pixel_count; ++i)
+      fprintf(f, "%d %d %d ", to_int(data[i].x), to_int(data[i].y), to_int(data[i].z));
 
     fclose(f);
 

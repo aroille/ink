@@ -1,7 +1,5 @@
 #pragma once
 
-#include "core/ink.h"
-#include "math/geometry.h"
 #include <random>
 
 namespace ink

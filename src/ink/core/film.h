@@ -1,6 +1,6 @@
 #pragma once
 
-#include "core/ink.h"
+#include "math/common.h"
 #include "math/vector.h"
 
 namespace ink
@@ -8,31 +8,24 @@ namespace ink
   class Film
   {
   public:
-    Film();
     Film(uint32 width, uint32 height);
     ~Film();
 
-    inline uint32  width() const  { return w; }
-    inline uint32  height() const { return h; }
+    inline uint32 width() const  { return w; }
+    inline uint32 height() const { return h; }
 
-    void    resize(uint32 width, uint32 height);
-    void    clear();
-    Vec3f&  pixel(uint32 x, uint32 y);
+    void           clear();
+    const Vec3f*   data_ptr() const { return data; }
 
-    bool    save(const char* filepath) const;
-  private:
-
-    struct Pixel
-    {
-      Vec3f xyz;
-      float weight;
-    };
+    void           accumulate(uint32 x, uint32 y, Vec3f value);
 
   private:
-    Pixel*  data;
-    uint32  w;
-    uint32  h;
+    Vec3f* data;
+    uint32 w;
+    uint32 h;
   };
+
+  bool saveImage(const Film& film, const char* filepath);
 
 }	// namespace ink
 

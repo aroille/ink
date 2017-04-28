@@ -1,38 +1,31 @@
 #pragma once
 
-#include "core/ink.h"
-#include "math/point.h"
+#include "math/common.h"
 #include "math/vector.h"
-#include "math/normal.h"
 
 namespace ink
 {
-  struct Instance;
-
   struct Ray
   {
-    Point3f o;      // origin
-    Vec3f   d;      // direction
-    //float   tmin;
-    //float   tmax;
+    Vec3f o;      // origin
+    Vec3f d;      // direction
+    float tmin;   // ray start
+    float tmax;   // ray end
   };
 
   struct RayHit
   {
-    float           t;            // hit point position
-    float           epsilon;
-    Normal3f        n;            // hit point surface normal
-    const Instance* instance;     // instance hit
-
-    inline void reset()
-    {
-      t = FLT_MAX;
-      epsilon = 0;
-      n = Normal3f(0, 0, 0);
-      instance = nullptr;
-    };
-
+    float  t;            // hit point parametric position
+    Vec3f  n;            // hit point surface normal
+    uint32 instance_id;  // instance hit
   };
+
+  inline void reset(RayHit& hit)
+  {
+    hit.t = FLT_MAX;
+    hit.n = Vec3f::zero;
+    hit.instance_id = UINT32_MAX;
+  }
 
   
 

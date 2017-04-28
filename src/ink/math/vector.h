@@ -1,20 +1,12 @@
 #pragma once
 
-#include "core/ink.h"
-
 namespace ink
 {
-  template <typename T>
-  struct Normal3;
-
-  template <typename T>
-  struct Point3;
-
   template <typename T>
   struct Vector3
   {
     // Attributes
-    T x, y, z;
+    T x, y, z, w;
 
     // Static constants
     static const Vector3<T> zero;
@@ -27,8 +19,6 @@ namespace ink
     Vector3() = default;
     Vector3(Vector3<T> const& in) = default;
     Vector3(T x_val, T y_val, T z_val);
-    explicit Vector3(Normal3<T> const& in);
-    explicit Vector3(Point3<T> const& in);
 
     Vector3<T>  operator-() const;
     Vector3<T>  operator+(Vector3<T> const& in) const;
@@ -193,6 +183,43 @@ namespace ink
   inline float Vector3<T>::length_squared() const
   {
     return x*x + y*y + z*z;
+  }
+
+  //================================================================================
+  template <typename T>
+  inline bool near_equal(Vector3<T> const& a, Vector3<T> const& b, float delta)
+  {
+    return ink::near_equal(a.x, b.x, delta) &&
+      ink::near_equal(a.y, b.y, delta) &&
+      ink::near_equal(a.z, b.z, delta);
+  }
+
+  //================================================================================
+  template <typename T>
+  inline Vector3<T> normalize(const Vector3<T>& in)
+  {
+    return in / in.length();
+  }
+
+  //================================================================================
+  template <typename T>
+  inline float dot(Vector3<T> const& a, Vector3<T> const& b)
+  {
+    return a.x*b.x + a.y*b.y + a.z*b.z;
+  }
+
+  //================================================================================
+  template <typename T>
+  inline Vector3<T> cross(Vector3<T> const& a, Vector3<T> const& b)
+  {
+    return Vector3<T>(a.y*b.z - a.z*b.y, a.z*b.x - a.x*b.z, a.x*b.y - a.y*b.x);
+  }
+
+  //================================================================================
+  template <typename T>
+  inline Vector3<T> reflection(Vector3<T> const& in, Vector3<T> const& normal)
+  {
+    return in - normal * (2.f * dot(in, normal));
   }
 
 } // namespace ink

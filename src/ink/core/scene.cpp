@@ -1,51 +1,40 @@
-#include "core/renderer.h"
-#include "core/filter.h"
-#include "math/random.h"
+#include "core/scene.h"
 #include "core/shape.h"
-#include "core/log.h"
 
 namespace ink
 { 
 
-  bool Instance::intersect(const Scene& scene, const Ray& ray, RayHit& hit) const
+  static bool intersect_instance(const Scene& scene, uint32 instance_id, const Ray& ray, RayHit& hit)
   {
-    RayHit object_hit;
-    Ray object_ray = world_to_object(ray);
+    const Instance& i = scene.instances[instance_id];
+    const Shape& shape = *(scene.shapes[i.shape_id]);
 
-    const Shape& shape = *(scene.shapes[shape_id]);
+    const Ray ray_obj = transform_ray(i.world_to_object, i.object_to_world, ray);
 
-    if(shape.intersect(object_ray, object_hit))
+    if (shape.intersect(ray_obj, hit))
     {
-      //Point3f p = ray.o + object_hit.t * ray.d;
-      hit.t = object_hit.t;
-      hit.epsilon = object_hit.epsilon;
-      hit.n = normalize(object_to_world(object_hit.n));
-      hit.instance = this;
+      hit.n = normalize(transform_vec(i.object_to_world, hit.n));
+      hit.instance_id = instance_id;
       return true;
     }
     return false;
   }
 
-  bool SceneRT::intersect(const Ray& ray, uint32 visibility, RayHit& hit) const
+  bool intersect(const Scene& scene, const Ray& ray, RayHit& hit)
   {
-    hit.reset();
+    reset(hit);
 
-    for (uint32 i = 0; i < scene->instances.size(); i++)
+    for (uint32 i = 0; i < scene.instances.size(); i++)
     {
-      const Instance& instance = scene->instances[i];
-
-      if ((instance.vis & visibility) != visibility)
-        continue;
-
       RayHit inst_hit;
-      if (instance.intersect(*scene, ray, inst_hit))
+      if (intersect_instance(scene, i, ray, inst_hit))
       {
         if (inst_hit.t < hit.t)
           hit = inst_hit;
       }
     }
 
-    return (hit.instance != nullptr);
+    return (hit.instance_id != UINT32_MAX);
   }
 
 }	// namespace ink

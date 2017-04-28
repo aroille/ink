@@ -1,9 +1,8 @@
 #pragma once
 
-#include "core/ink.h"
-#include "math/geometry.h"
 #include "math/random.h"
-#include <vector>
+#include "math/ray.h"
+#include "math/vector.h"
 namespace ink
 {
   inline Vec3f random_in_unit_sphere(RandomGenerator& gen)
@@ -34,7 +33,7 @@ namespace ink
 
     virtual void scatter(const Ray& ray_in, const RayHit& hit, Ray& ray_out, Vec3f& attenuation, RandomGenerator& gen) override
     {
-      ray_out.o = ray_in.o + hit.t * (1.0f - hit.epsilon) * ray_in.d;
+      ray_out.o = ray_in.o + hit.t * (1.0f - delta) * ray_in.d;
       ray_out.d = normalize(Vec3f(hit.n) + random_in_unit_sphere(gen));
 
       attenuation = albedo;
@@ -51,7 +50,7 @@ namespace ink
 
     virtual void scatter(const Ray& ray_in, const RayHit& hit, Ray& ray_out, Vec3f& attenuation, RandomGenerator& gen) override
     {
-      ray_out.o = ray_in.o + hit.t * (1.0f - hit.epsilon) * ray_in.d;
+      ray_out.o = ray_in.o + hit.t * (1.0f - delta) * ray_in.d;
       ray_out.d = normalize(reflection(ray_in.d, Vec3f(hit.n)) + roughness*random_in_unit_sphere(gen));
 
       attenuation = albedo;

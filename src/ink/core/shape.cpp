@@ -1,6 +1,7 @@
 
 #include "core/shape.h"
-#include "math/geometry.h"
+#include "math/common.h"
+#include "math/ray.h"
 
 namespace ink
 {
@@ -22,12 +23,10 @@ namespace ink
       thit = t1;
 
     hit.t = thit;
-    hit.n = normalize(Normal3f(Vec3f(ray.o + ray.d * thit)));
+    hit.n = normalize(Vec3f(ray.o + ray.d * thit));
 
     if (dot(ray.d, hit.n) > 0.0)
       hit.n = -hit.n;
-
-    hit.epsilon = 5e-4f;
 
     return true;
   }

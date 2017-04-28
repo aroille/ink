@@ -1,19 +1,22 @@
 #pragma once
 
-#include "core/ink.h"
-#include "math/ray.h"
-
 namespace ink
 {
-  struct Shape
+  struct Ray;
+  struct RayHit;
+
+  class Shape
   {
+  public:
     virtual bool intersect(const Ray& ray, RayHit& hit) const = 0;
   };
 
-  struct Sphere : public Shape
+  class Sphere : public Shape
   {
+  public:
     float radius;
 
+  public:
     virtual bool intersect(const Ray& ray, RayHit& hit) const override;
   };
 

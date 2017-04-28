@@ -1,5 +1,5 @@
 #include "math/transform.h"
-#include "math/geometry.h"
+#include <utility>
 
 namespace ink
 {
@@ -55,7 +55,27 @@ namespace ink
     return false;
   }
 
-  Matrix4x4 inverse(const Matrix4x4 &m)
+  Matrix4x4 Matrix4x4::mul(const Matrix4x4 &m1, const Matrix4x4 &m2)
+  {
+    Matrix4x4 r;
+    for (int i = 0; i < 4; ++i)
+      for (int j = 0; j < 4; ++j)
+        r.m[i][j] = m1.m[i][0] * m2.m[0][j]
+        + m1.m[i][1] * m2.m[1][j]
+        + m1.m[i][2] * m2.m[2][j]
+        + m1.m[i][3] * m2.m[3][j];
+    return r;
+  }
+
+  Matrix4x4 Matrix4x4::transpose(const Matrix4x4 &m)
+  {
+    return Matrix4x4(m.m[0][0], m.m[1][0], m.m[2][0], m.m[3][0],
+      m.m[0][1], m.m[1][1], m.m[2][1], m.m[3][1],
+      m.m[0][2], m.m[1][2], m.m[2][2], m.m[3][2],
+      m.m[0][3], m.m[1][3], m.m[2][3], m.m[3][3]);
+  }
+
+  Matrix4x4 Matrix4x4::inverse(const Matrix4x4 &m)
   {
     int indxc[4], indxr[4];
     int ipiv[4] = { 0, 0, 0, 0 };
@@ -113,27 +133,18 @@ namespace ink
     return Matrix4x4(minv);
   }
 
-  Matrix4x4 transpose(const Matrix4x4 &m)
-  {
-    return Matrix4x4(m.m[0][0], m.m[1][0], m.m[2][0], m.m[3][0],
-      m.m[0][1], m.m[1][1], m.m[2][1], m.m[3][1],
-      m.m[0][2], m.m[1][2], m.m[2][2], m.m[3][2],
-      m.m[0][3], m.m[1][3], m.m[2][3], m.m[3][3]);
-  }
-
-
   Transform::Transform(const float mat[4][4])
   {
     m = Matrix4x4(mat[0][0], mat[0][1], mat[0][2], mat[0][3],
       mat[1][0], mat[1][1], mat[1][2], mat[1][3],
       mat[2][0], mat[2][1], mat[2][2], mat[2][3],
       mat[3][0], mat[3][1], mat[3][2], mat[3][3]);
-    m_inv = inverse(m);
+    m_inv = Matrix4x4::inverse(m);
   }
 
 
   Transform::Transform(const Matrix4x4 &m)
-    : m(m), m_inv(inverse(m))
+    : m(m), m_inv(Matrix4x4::inverse(m))
   {
 
   }
@@ -166,7 +177,7 @@ namespace ink
 
   Transform transpose(const Transform& t)
   {
-    return Transform(transpose(t.m), transpose(t.m_inv));
+    return Transform(Matrix4x4::transpose(t.m), Matrix4x4::transpose(t.m_inv));
   }
 
   Transform translate(float x, float y, float z)
@@ -190,7 +201,7 @@ namespace ink
     float cosTheta = std::cos(radians(theta));
     Matrix4x4 m(1, 0, 0, 0, 0, cosTheta, -sinTheta, 0, 0, sinTheta, cosTheta, 0,
       0, 0, 0, 1);
-    return Transform(m, transpose(m));
+    return Transform(m, Matrix4x4::transpose(m));
   }
 
   Transform rotate_y(float theta)
@@ -199,7 +210,7 @@ namespace ink
     float cosTheta = std::cos(radians(theta));
     Matrix4x4 m(cosTheta, 0, sinTheta, 0, 0, 1, 0, 0, -sinTheta, 0, cosTheta, 0,
       0, 0, 0, 1);
-    return Transform(m, transpose(m));
+    return Transform(m, Matrix4x4::transpose(m));
   }
 
   Transform rotate_z(float theta)
@@ -208,10 +219,10 @@ namespace ink
     float cosTheta = std::cos(radians(theta));
     Matrix4x4 m(cosTheta, -sinTheta, 0, 0, sinTheta, cosTheta, 0, 0, 0, 0, 1, 0,
       0, 0, 0, 1);
-    return Transform(m, transpose(m));
+    return Transform(m, Matrix4x4::transpose(m));
   }
 
-  Transform look_at(const Point3f& pos, const Point3f& target, const Vec3f& up)
+  Transform look_at(const Vec3f& pos, const Vec3f& target, const Vec3f& up)
   {
     float m[4][4];
 
@@ -242,9 +253,41 @@ namespace ink
     return Transform(m);
   }
 
-  Transform camera_look_at(const Point3f& pos, const Point3f& target, const Vec3f& up)
+  Transform camera_look_at(const Vec3f& pos, const Vec3f& target, const Vec3f& up)
   {
     return look_at(pos, pos-(target-pos), up);
+  }
+
+
+  Vec3f transform_point(const Matrix4x4 m, const Vec3f& p)
+  {
+    float x = p.x, y = p.y, z = p.z;
+    float xp = m.m[0][0] * x + m.m[0][1] * y + m.m[0][2] * z + m.m[0][3];
+    float yp = m.m[1][0] * x + m.m[1][1] * y + m.m[1][2] * z + m.m[1][3];
+    float zp = m.m[2][0] * x + m.m[2][1] * y + m.m[2][2] * z + m.m[2][3];
+    float wp = m.m[3][0] * x + m.m[3][1] * y + m.m[3][2] * z + m.m[3][3];
+    assert(wp != 0);
+
+    if (wp == 1)
+      return Vec3f(xp, yp, zp);
+    else
+      return Vec3f(xp, yp, zp) / wp;
+  }
+
+  Vec3f transform_vec(const Matrix4x4 m, const Vec3f& v)
+  {
+    float x = v.x, y = v.y, z = v.z;
+    return Vec3f(m.m[0][0] * x + m.m[0][1] * y + m.m[0][2] * z,
+      m.m[1][0] * x + m.m[1][1] * y + m.m[1][2] * z,
+      m.m[2][0] * x + m.m[2][1] * y + m.m[2][2] * z);
+  }
+
+  Ray transform_ray(const Matrix4x4 m, const Matrix4x4 m_inv, const Ray& r)
+  {
+    Ray ray = r;
+    ray.o = transform_point(m, r.o);
+    ray.d = transform_vec(Matrix4x4::transpose(m_inv), r.d);
+    return ray;
   }
 
 } // namespace ink
