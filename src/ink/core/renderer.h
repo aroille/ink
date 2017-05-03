@@ -17,13 +17,7 @@ namespace ink
   {
   public:
     virtual Vec3f radiance(const Ray& ray, RandomGenerator& gen) const = 0;
-    Scene* scene;
-  };
-
-  class SimpleIntegrator : public Integrator
-  {
-  public:
-    virtual Vec3f radiance(const Ray& ray, RandomGenerator& gen) const ;
+    const Scene* scene;
   };
 
   class SimpleRenderer
@@ -31,11 +25,12 @@ namespace ink
   public:
     uint32 spp = 1; // sample per pixel
     uint32 tile_size = 16;
+    uint32 random_seed = 1234;
 
   public:
     SimpleRenderer();
-    ~SimpleRenderer();
-    void start(Integrator& integrator, Scene& scene, Camera& camera, Film& film);
+
+    void start(Integrator& integrator, Scene& scene, Camera& camera, Film& film, Filter& filter);
 
   private:
     void thread_task();
@@ -47,9 +42,6 @@ namespace ink
     Scene*      scene;
     Camera*     camera;
     Film*       film;
-
-    RandomGenerator prim_generator;
-    RandomGenerator diffuse_generator;
 
     uint32 tile_count;
     uint32 tile_count_x;

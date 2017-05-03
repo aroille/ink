@@ -60,7 +60,7 @@ namespace ink
 
   Vec3f transform_point(const Matrix4x4 m, const Vec3f& p);
   Vec3f transform_vec(const Matrix4x4 m, const Vec3f& v);
-  Ray   transform_ray(const Matrix4x4 m, const Matrix4x4 m_inv, const Ray& r);
+  Ray   transform_ray(const Matrix4x4 m, const Ray& r);
   //================================================================================
   
   /*

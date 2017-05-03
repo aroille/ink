@@ -21,7 +21,7 @@ namespace ink
   static const float Pi = 3.1415926535897932f;
   static const float inv_Pi = 0.31830988618f;
   static const float half_Pi = 1.57079632679f;
-  static const float delta = 0.00001f; // Magic numbers for numerical precision
+  static const float delta = 0.005f; // Magic numbers for numerical precision
 
 
   inline float abs(float x)
@@ -61,24 +61,15 @@ namespace ink
 
   inline bool quadratic(float A, float B, float C, float& t0, float& t1)
   {
-    float discrim = B*B - 4 * A*C;
-    if (discrim <= 0)
+    const float discrim = B*B - 4.0f*A*C;
+    if (discrim <= 0.0f)
       return false;
 
-    float root_discrim = sqrtf(discrim);
+    const float root_discrim = sqrt(discrim);
+    const float rcpA = 1.0f/A;
 
-    float q;
-    if (B < 0)	q = -0.5 * (B - root_discrim);
-    else				q = -0.5 * (B + root_discrim);
-    t0 = q / A;
-    t1 = C / q;
-
-    if (t0 > t1)
-    {
-      float t = t0;
-      t0 = t1;
-      t1 = t;
-    }
+    t0 = 0.5f * rcpA * (-B - root_discrim);
+    t1 = 0.5f * rcpA * (-B + root_discrim);
     return true;
   }
 

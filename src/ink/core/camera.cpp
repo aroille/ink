@@ -19,8 +19,7 @@ namespace ink
     r.tmax = FLT_MAX;
 
     // Ray in world space
-    ray = transform_ray(proj.camera_to_world, proj.world_to_camera, r);
-    ray.d = normalize(ray.d);
+    ray = transform_ray(proj.camera_to_world, r);
   }
 
   void PinholeCamera::update(uint32 film_width, uint32 film_height)

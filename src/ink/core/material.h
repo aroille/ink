@@ -18,46 +18,43 @@ namespace ink
   class Material
   {
   public:
-    Material() : emission(Vec3f::zero) {}
+    Vec3f emission = Vec3f::zero;
 
-    virtual void scatter(const Ray& ray_in, const RayHit& hit, Ray& ray_out, Vec3f& attenuation, RandomGenerator& gen) = 0;
-
-    Vec3f emission;
+  public:
+    virtual void scatter(const Ray& ray_in, const RayHit& hit, Ray& ray_out, Vec3f& attenuation, RandomGenerator& gen) const = 0;
   };
 
   // LAMBERT
   class LambertMaterial : public Material
   {
   public:
-    LambertMaterial(Vec3f albedo) : Material(), albedo(albedo) {}
-
-    virtual void scatter(const Ray& ray_in, const RayHit& hit, Ray& ray_out, Vec3f& attenuation, RandomGenerator& gen) override
-    {
-      ray_out.o = ray_in.o + hit.t * (1.0f - delta) * ray_in.d;
-      ray_out.d = normalize(Vec3f(hit.n) + random_in_unit_sphere(gen));
+    Vec3f albedo = Vec3f(0.7f, 0.7f, 0.7f);
+  
+  public:
+    virtual void scatter(const Ray& ray_in, const RayHit& hit, Ray& ray_out, Vec3f& attenuation, RandomGenerator& gen) const override
+    { 
+      ray_out.o = ray_in.o + hit.t * ray_in.d;
+      ray_out.d = hit.n + random_in_unit_sphere(gen);
 
       attenuation = albedo;
     }
-
-    Vec3f albedo;
   };
 
   // METAL
   class MetalMaterial : public Material
   {
   public:
-    MetalMaterial(Vec3f albedo, float roughness = 0.0f) : Material(), albedo(albedo), roughness(roughness){}
+    Vec3f albedo = Vec3f(0.7f, 0.7f, 0.7f);
+    float roughness = 0.02f;
 
-    virtual void scatter(const Ray& ray_in, const RayHit& hit, Ray& ray_out, Vec3f& attenuation, RandomGenerator& gen) override
+  public:
+    virtual void scatter(const Ray& ray_in, const RayHit& hit, Ray& ray_out, Vec3f& attenuation, RandomGenerator& gen) const override
     {
-      ray_out.o = ray_in.o + hit.t * (1.0f - delta) * ray_in.d;
-      ray_out.d = normalize(reflection(ray_in.d, Vec3f(hit.n)) + roughness*random_in_unit_sphere(gen));
+      ray_out.o = ray_in.o + hit.t * ray_in.d;
+      ray_out.d = reflection(ray_in.d, hit.n) + roughness * random_in_unit_sphere(gen);
 
       attenuation = albedo;
     }
-
-    Vec3f albedo;
-    float roughness;
   };
 
 }    // namespace ink

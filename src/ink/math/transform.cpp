@@ -182,7 +182,7 @@ namespace ink
 
   Transform translate(float x, float y, float z)
   {
-    Matrix4x4			m(1, 0, 0, x, 0, 1, 0, y, 0, 0, 1, z, 0, 0, 0, 1);
+    Matrix4x4			m(1, 0, 0,  x, 0, 1, 0,  y, 0, 0, 1,  z, 0, 0, 0, 1);
     Matrix4x4 m_inv(1, 0, 0, -x, 0, 1, 0, -y, 0, 0, 1, -z, 0, 0, 0, 1);
     return Transform(m, m_inv);
   }
@@ -261,17 +261,14 @@ namespace ink
 
   Vec3f transform_point(const Matrix4x4 m, const Vec3f& p)
   {
-    float x = p.x, y = p.y, z = p.z;
-    float xp = m.m[0][0] * x + m.m[0][1] * y + m.m[0][2] * z + m.m[0][3];
-    float yp = m.m[1][0] * x + m.m[1][1] * y + m.m[1][2] * z + m.m[1][3];
-    float zp = m.m[2][0] * x + m.m[2][1] * y + m.m[2][2] * z + m.m[2][3];
-    float wp = m.m[3][0] * x + m.m[3][1] * y + m.m[3][2] * z + m.m[3][3];
-    assert(wp != 0);
+    const float x = p.x, y = p.y, z = p.z;
+    const float xp = m.m[0][0] * x + m.m[0][1] * y + m.m[0][2] * z + m.m[0][3];
+    const float yp = m.m[1][0] * x + m.m[1][1] * y + m.m[1][2] * z + m.m[1][3];
+    const float zp = m.m[2][0] * x + m.m[2][1] * y + m.m[2][2] * z + m.m[2][3];
+    const float wp = m.m[3][0] * x + m.m[3][1] * y + m.m[3][2] * z + m.m[3][3];
+    assert(wp != 0.f);
 
-    if (wp == 1)
-      return Vec3f(xp, yp, zp);
-    else
-      return Vec3f(xp, yp, zp) / wp;
+    return Vec3f(xp, yp, zp) / wp;
   }
 
   Vec3f transform_vec(const Matrix4x4 m, const Vec3f& v)
@@ -282,11 +279,11 @@ namespace ink
       m.m[2][0] * x + m.m[2][1] * y + m.m[2][2] * z);
   }
 
-  Ray transform_ray(const Matrix4x4 m, const Matrix4x4 m_inv, const Ray& r)
+  Ray transform_ray(const Matrix4x4 m, const Ray& r)
   {
     Ray ray = r;
     ray.o = transform_point(m, r.o);
-    ray.d = transform_vec(Matrix4x4::transpose(m_inv), r.d);
+    ray.d = transform_vec(m, r.d);
     return ray;
   }
 

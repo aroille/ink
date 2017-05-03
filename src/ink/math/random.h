@@ -19,6 +19,11 @@ namespace ink
       delete random_engine;
     }
 
+    void seed(uint32_t s)
+    {
+      random_engine->seed(s);
+    }
+
     float operator ()()
     {
       return (*distr)(*random_engine);
