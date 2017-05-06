@@ -192,7 +192,11 @@ namespace ink
     Matrix4x4 m(x, 0, 0, 0, 0, y, 0, 0, 0, 0, z, 0, 0, 0, 0, 1);
     Matrix4x4 m_inv(1 / x, 0, 0, 0, 0, 1 / y, 0, 0, 0, 0, 1 / z, 0, 0, 0, 0, 1);
     return Transform(m, m_inv);
+  }
 
+  Transform scale(float s)
+  {
+    return scale(s, s, s);
   }
 
   Transform rotate_x(float theta)

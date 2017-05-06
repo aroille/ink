@@ -25,7 +25,7 @@ namespace ink
   };
 
   // LAMBERT
-  class LambertMaterial : public Material
+  class Lambertian : public Material
   {
   public:
     Vec3f albedo = Vec3f(0.7f, 0.7f, 0.7f);
@@ -41,7 +41,7 @@ namespace ink
   };
 
   // METAL
-  class MetalMaterial : public Material
+  class Metal : public Material
   {
   public:
     Vec3f albedo = Vec3f(0.7f, 0.7f, 0.7f);

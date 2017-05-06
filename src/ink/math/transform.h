@@ -52,6 +52,7 @@ namespace ink
 
   Transform translate(float x, float y, float z);
   Transform scale(float x, float y, float z);
+  Transform scale(float s);
   Transform rotate_x(float theta);
   Transform rotate_y(float theta);
   Transform rotate_z(float theta);

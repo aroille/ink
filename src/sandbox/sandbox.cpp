@@ -23,46 +23,28 @@ void create_scene(Scene& scene, PinholeCamera& camera)
     Vec3f(0.f, 1.f, 0.f));        // up
 
   // shapes
-  Sphere* sphere_small = new Sphere();
-  sphere_small->radius = 1.f;
-
-  Sphere* sphere_big = new Sphere();
-  sphere_big->radius = 500.f;
-
-  uint32 sphere_small_id = (uint32)scene.shapes.size();
-  scene.shapes.push_back(sphere_small);
-
-  uint32 sphere_big_id = (uint32)scene.shapes.size();
-  scene.shapes.push_back(sphere_big);
+  SceneShape<Sphere> sphere(scene);
+  sphere->radius = 1.f;
 
   // materials
-  LambertMaterial* mat_red = new LambertMaterial();
-  mat_red->albedo = Vec3f(0.75, 0.25, 0.25);
-  mat_red->emission = Vec3f::zero;
+  SceneMaterial<Lambertian> lambert_red(scene);
+  lambert_red->albedo = Vec3f(0.75, 0.25, 0.25);
+  lambert_red->emission = Vec3f::zero;
 
-  LambertMaterial* mat_emi = new LambertMaterial();
-  mat_emi->albedo = Vec3f::zero;
-  mat_emi->emission = Vec3f::one*5;
+  SceneMaterial<Lambertian> emissive(scene);
+  emissive->albedo = Vec3f::zero;
+  emissive->emission = Vec3f::one * 5;
 
-  MetalMaterial* mat_metal = new MetalMaterial();
-  mat_metal->albedo = 0.8f * Vec3f::one;
-  mat_metal->emission = Vec3f::zero;
-  mat_metal->roughness = 0.2f;
-
-  uint32 mat_red_id = (uint32)scene.materials.size();
-  scene.materials.push_back(mat_red);
-
-  uint32 mat_emi_id = (uint32)scene.materials.size();
-  scene.materials.push_back(mat_emi);
-
-  uint32 mat_metal_id = (uint32)scene.materials.size();
-  scene.materials.push_back(mat_metal);
+  SceneMaterial<Metal> metal(scene);
+  metal->albedo = 0.8f * Vec3f::one;
+  metal->emission = Vec3f::zero;
+  metal->roughness = 0.2f;
 
   // instances
-  scene.instances.push_back(make_instance(sphere_small_id, mat_red_id, translate(-1.0f, 1.f, 0.f)));
-  scene.instances.push_back(make_instance(sphere_small_id, mat_metal_id, translate(3.0f, 1.f, -1.f)));
-  scene.instances.push_back(make_instance(sphere_small_id, mat_emi_id, translate(1.f, 3.f, 0.f)));
-  scene.instances.push_back(make_instance(sphere_big_id, mat_metal_id, translate(0.f, -500.f, 0.f)));
+  new_instance(scene, sphere, lambert_red,  translate(-1.0f, 1.f, 0.f));
+  new_instance(scene, sphere, metal,        translate(3.0f, 1.f, -1.f));
+  new_instance(scene, sphere, emissive,     translate(1.f, 3.f, 0.f));
+  new_instance(scene, sphere, metal,        translate(0.f, -500.f, 0.f) * scale(500.f));
 }
 
 int main(int, char**)
