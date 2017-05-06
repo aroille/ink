@@ -6,10 +6,10 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR
     "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang") 
     set(warnings "-Wall -Wextra -Werror")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    set(warnings "/W4 /WX /EHsc /wd4244 /wd4996 /wd4305")
+    set(warnings "/W4 /WX")
 endif()
-set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} ${warnings}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${warnings}")
+set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} ${warnings} /openmp")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${warnings} /openmp")
 
 message ("cxx Flags: " ${CMAKE_CXX_FLAGS})
 

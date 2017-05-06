@@ -34,8 +34,8 @@ namespace ink
 
   bool saveImage(const Film& film, const char* filepath)
   {
-    FILE *f = fopen(filepath, "w"); // Write image to PPM file. 
-    if (!f)
+    FILE *f; // Write image to PPM file. 
+    if (fopen_s(&f, filepath, "w"))
     {    
       INK_LOG_ERROR("Can't open file: " << filepath);
       return false;

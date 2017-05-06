@@ -26,7 +26,7 @@ namespace ink
 
     float operator ()()
     {
-      return (*distr)(*random_engine);
+      return (float)(*distr)(*random_engine);
     }
 
   private:

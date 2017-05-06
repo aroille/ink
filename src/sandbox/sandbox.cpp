@@ -1,5 +1,6 @@
 
 #include "core/renderer.h"
+#include "core/integrator.h"
 #include "core/scene.h"
 #include "core/film.h"
 #include "core/camera.h"
@@ -46,7 +47,7 @@ void create_scene(Scene& scene, PinholeCamera& camera)
   MetalMaterial* mat_metal = new MetalMaterial();
   mat_metal->albedo = 0.8f * Vec3f::one;
   mat_metal->emission = Vec3f::zero;
-  mat_metal->roughness = 0.02f;
+  mat_metal->roughness = 0.2f;
 
   uint32 mat_red_id = (uint32)scene.materials.size();
   scene.materials.push_back(mat_red);
@@ -60,67 +61,9 @@ void create_scene(Scene& scene, PinholeCamera& camera)
   // instances
   scene.instances.push_back(make_instance(sphere_small_id, mat_red_id, translate(-1.0f, 1.f, 0.f)));
   scene.instances.push_back(make_instance(sphere_small_id, mat_metal_id, translate(3.0f, 1.f, -1.f)));
-  //scene.instances.push_back(make_instance(sphere_small_id, mat_emi_id, translate(1.f, 3.f, 0.f)));
+  scene.instances.push_back(make_instance(sphere_small_id, mat_emi_id, translate(1.f, 3.f, 0.f)));
   scene.instances.push_back(make_instance(sphere_big_id, mat_metal_id, translate(0.f, -500.f, 0.f)));
 }
-
-class DebugIntegrator : public Integrator
-{
-public:
-  virtual Vec3f radiance(const Ray& ray, RandomGenerator& gen) const
-  {
-    //int thread_id = omp_get_thread_num();
-    //return Vec3f((float)thread_id/7.f, 0, 0);
-
-    RayHit hit;
-    if (intersect(*scene, ray, hit))
-      //return Vec3f((float)(hit.instance_id+1)/scene->instances.size(), 0, 0);
-      return hit.n;
-    else
-      return Vec3f(0.5, 0.5, 0.5);
-  }
-};
-
-class SimpleIntegrator : public Integrator
-{
-public:
-  uint32 max_bounce = 3;
-
-public:
-  virtual Vec3f radiance(const Ray& ray, RandomGenerator& gen) const
-  {
-    return radiance(ray, gen, max_bounce);
-  }
-
-  Vec3f radiance(const Ray& ray, RandomGenerator& gen, int remaining_bounce) const
-  {
-    RayHit hit;
-    if (intersect(*scene, ray, hit))
-    {
-      const Instance& instance = scene->instances[hit.instance_id];
-      const Material* material = scene->materials[instance.material_id];
-
-      // post intersect
-      hit.n = normalize(transform_vec(scene->instances[hit.instance_id].object_to_world, hit.n));
-
-      Ray new_ray;
-      Vec3f attenuation;
-      material->scatter(ray, hit, new_ray, attenuation, gen);
-      new_ray.tmin = delta;
-      new_ray.tmax = FLT_MAX;
-
-      Vec3f next_bounce_radiance = Vec3f::zero;
-      if ((remaining_bounce > 0) && (attenuation.length_squared() != 0.f))
-        next_bounce_radiance = radiance(new_ray, gen, remaining_bounce - 1);
-
-      return next_bounce_radiance * attenuation + material->emission;
-    }
-    else
-    {
-      return Vec3f(0.8f, 0.8f, 0.8f);
-    }
-  }
-};
 
 int main(int, char**)
 {
@@ -132,17 +75,18 @@ int main(int, char**)
   // film
   Film film(512, 512);
 
+  // reconstruction filter
+  BoxFilter filter(1.f, 1.f);
+
   // integrator
   SimpleIntegrator integrator;
-  integrator.max_bounce = 1;
+  integrator.max_bounce = 6;
+  integrator.sky_radiance = Vec3f(0.7f, 0.2f, 0.2f);
 
   // renderer
   SimpleRenderer renderer;
-  renderer.spp = 1;
+  renderer.spp = 128;
   renderer.tile_size = 16;
-
-  // reconstruction filter
-  BoxFilter filter(1.f, 1.f);
 
   // start rendering
   renderer.start(integrator, scene, camera, film, filter);

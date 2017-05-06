@@ -1,4 +1,5 @@
 #include "core/renderer.h"
+#include "core/integrator.h"
 #include "core/filter.h"
 #include "core/scene.h"
 #include "core/film.h"
@@ -10,10 +11,6 @@
 
 namespace ink
 { 
-  SimpleRenderer::SimpleRenderer()
-  {
-  }
-
   void SimpleRenderer::start(Integrator& integrator, Scene& scene, Camera& camera, Film& film, Filter& filter)
   {
     this->integrator = &integrator;
@@ -42,7 +39,7 @@ namespace ink
     RandomGenerator prim_generator(-0.5, 0.5);
     RandomGenerator diffuse_generator(-1.0, 1.0);
 
-    while (true)
+    for (;;)
     {
       uint32 tile_id = next_tile++;
       if (tile_id >= tile_count)
@@ -67,9 +64,6 @@ namespace ink
           float pixel_center_x = x + 0.5f;
           float pixel_center_y = y + 0.5f;
 
-          if (x == 265 && y == 286)
-            printf("oh");
-
           Vec3f radiance = Vec3f::zero;
           float weigth = 0.0f;
           for (uint32 s = 0; s < spp; ++s)
@@ -91,23 +85,6 @@ namespace ink
       }
     }
   }
-
-  /*
-  Vec3f SimpleIntegrator::radiance(const Ray& ray, RandomGenerator&) const
-  {
-    RayHit hit;
-    if (intersect(*scene, ray, hit))
-    {
-      return Vec3f(1, 0, 0);
-    }
-    else
-    {
-      //return Vec3f(0, 0, 0);
-      float t = 0.5f * (ray.d.y + 1.0f);
-      return (1 - t) * Vec3f::one + t * Vec3f(0.5, 0.7, 1.0);
-    }
-  }
-  */
 
 }	// namespace ink
 

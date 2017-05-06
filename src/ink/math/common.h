@@ -21,7 +21,7 @@ namespace ink
   static const float Pi = 3.1415926535897932f;
   static const float inv_Pi = 0.31830988618f;
   static const float half_Pi = 1.57079632679f;
-  static const float delta = 0.005f; // Magic numbers for numerical precision
+  static const float delta = 0.0005f; // Magic numbers for numerical precision
 
 
   inline float abs(float x)
@@ -50,6 +50,11 @@ namespace ink
   }
 
   inline float min(float a, float b)
+  {
+    return a <= b ? a : b;
+  }
+
+  inline uint32 min(uint32 a, uint32 b)
   {
     return a <= b ? a : b;
   }

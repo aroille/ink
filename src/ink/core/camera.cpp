@@ -29,9 +29,9 @@ namespace ink
     proj.camera_to_world = transform.matrix();
     proj.world_to_camera = transform.inverse_matrix();
 
-    float n = 1;  // near z plane
-    float f = 10; // far z plane
-    float s = 1.0 / tanf(0.5 * radians(fov));
+    float n = 1.f;  // near z plane
+    float f = 10.f; // far z plane
+    float s = 1.f / tanf(0.5f * radians(fov));
     float ratio = (float)film_width / (float)film_height;
 
     proj.camera_to_screen = Matrix4x4(-s / ratio, 0, 0, 0,
@@ -41,10 +41,10 @@ namespace ink
 
     proj.screen_to_camera = Matrix4x4::inverse(proj.camera_to_screen);
 
-    Transform screen_to_raster = scale(film_width, film_height, 1) *
-                                 scale(1.0 / (screen_window[1] - screen_window[0]),
-                                 1.0 / (screen_window[2] - screen_window[3]), 1) *
-                                 translate(-screen_window[0], -screen_window[3], 0);
+    Transform screen_to_raster = scale((float)film_width, (float)film_height, 1.f) *
+                                 scale(1.f / (screen_window[1] - screen_window[0]),
+                                 1.f / (screen_window[2] - screen_window[3]), 1.f) *
+                                 translate(-screen_window[0], -screen_window[3], 0.f);
 
     proj.screen_to_raster = screen_to_raster.matrix();
     proj.raster_to_screen = screen_to_raster.inverse_matrix();

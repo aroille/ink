@@ -27,7 +27,10 @@ namespace ink
   {
     // get time
     time_t t = std::time(0);
+    #pragma warning( push )
+    #pragma warning( disable : 4996 )
     tm* now = localtime(&t);
+    #pragma warning( pop )
 
     // output format
     char msg_buffer[512];
