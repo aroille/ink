@@ -15,11 +15,12 @@ namespace ink
 
   struct RayHit
   {
-    float  t;            // parametric position of the hit point
-    Vec3f  n;            // geometry normal at the hit point 
-                         // - unormalized object space before post_intersection
-                         // - normalized world space after post_intersection
-    uint32 instance_id;  // instance hit
+    float t;            // parametric position of the hit point
+    float epsilon;      
+    Vec3f n;            // geometry normal at the hit point 
+                        // - unormalized object space before post_intersection
+                        // - normalized world space after post_intersection
+    uint32 instance_id; // instance hit
   };
 
   inline void reset(RayHit& hit)

@@ -25,7 +25,7 @@ namespace ink
       Vec3f attenuation;
 
       material->scatter(ray, hit, new_ray, attenuation, gen);
-      new_ray.tmin = hit.t * delta;
+      new_ray.tmin = hit.epsilon;
       new_ray.tmax = FLT_MAX;
 
       Vec3f next_bounce_radiance = Vec3f::zero;

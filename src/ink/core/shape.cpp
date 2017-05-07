@@ -18,6 +18,7 @@ namespace ink
     if ((t0 > ray.tmin) & (t0 < ray.tmax))
     {
       hit.t = t0;
+      hit.epsilon = hit.t * 5e-4f;
       hit.n = ray.o + ray.d * t0;
       return true;
     }
@@ -25,6 +26,7 @@ namespace ink
     if ((t1 > ray.tmin) & (t1 < ray.tmax))
     {
       hit.t = t1;
+      hit.epsilon = hit.t * 5e-4f;
       hit.n = ray.o + ray.d * t1;
       return true;
     }
