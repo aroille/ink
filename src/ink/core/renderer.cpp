@@ -36,8 +36,8 @@ namespace ink
 
   void SimpleRenderer::thread_task()
   {
-    RandomGenerator prim_generator(-0.5, 0.5);
-    RandomGenerator diffuse_generator(-1.0, 1.0);
+    RandomGenerator prim_generator(0.0f, 1.0f);
+    RandomGenerator diffuse_generator(-1.0f, 1.0f);
 
     for (;;)
     {
@@ -63,6 +63,9 @@ namespace ink
         {
           float pixel_center_x = x + 0.5f;
           float pixel_center_y = y + 0.5f;
+
+          if (y == 256 && x == 256)
+            pixel_center_x = pixel_center_x;
 
           Vec3f radiance = Vec3f::zero;
           float weigth = 0.0f;

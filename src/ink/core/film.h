@@ -1,7 +1,7 @@
 #pragma once
 
 #include "math/common.h"
-#include "math/vector.h"
+#include "math/vector3.h"
 
 namespace ink
 {

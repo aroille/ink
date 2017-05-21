@@ -2,7 +2,8 @@
 
 #include "math/random.h"
 #include "math/ray.h"
-#include "math/vector.h"
+#include "math/vector3.h"
+
 namespace ink
 {
   inline Vec3f random_in_unit_sphere(RandomGenerator& gen)

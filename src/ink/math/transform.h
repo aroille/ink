@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cassert>
-#include "math/vector.h"
+#include "math/vector3.h"
 #include "math/ray.h"
 
 namespace ink
