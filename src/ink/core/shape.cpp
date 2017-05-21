@@ -1,6 +1,5 @@
 
 #include "core/shape.h"
-#include "math/common.h"
 #include "math/ray.h"
 
 namespace ink
@@ -32,6 +31,53 @@ namespace ink
     }
 
     return false;
+  }
+
+  bool TriangleMesh::intersect(const Ray& ray, RayHit& hit) const
+  {
+    hit.t = FLT_MAX;
+
+    for (uint32 i = 0; i < tri_count; ++i)
+    {
+      
+      
+      const Vec3f e1 = p2 - p1;
+      const Vec3f e2 = p3 - p1;
+      const Vec3f s1 = cross(ray.d, e2);
+
+      const float divisor = dot(s1, e1);
+
+      if (divisor == 0.f)
+        continue;
+
+      float inv_divisor = 1.f / divisor;
+
+      // Compute first barycentric coordinate
+      Vec3f s = ray.o - p1;
+      float b1 = dot(s, s1) * inv_divisor;
+      if (b1 < 0. || b1 > 1.)
+        continue;
+
+      // Compute second barycentric coordinate
+      Vec3f s2 = cross(s, e1);
+      float b2 = dot(ray.d, s2) * inv_divisor;
+      if (b2 < 0. || b1 + b2 > 1.)
+        continue;
+
+      // Compute _t_ to intersection point
+      float t = dot(e2, s2) * inv_divisor;
+      if (t < ray.tmin || t > ray.tmax)
+        continue;
+
+      if (t < hit.t)
+      {
+        hit.t = t;
+        hit.n = cross(e1, e2);
+      }
+    }
+
+    hit.epsilon = hit.t * 1e-3f;
+    return (hit.t != FLT_MAX);
   }
 
 } // namespace ink

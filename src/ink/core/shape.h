@@ -1,5 +1,10 @@
 #pragma once
 
+#include <memory>
+
+#include "math/common.h"
+#include "math/vector3.h"
+
 namespace ink
 {
   struct Ray;
@@ -14,7 +19,18 @@ namespace ink
   class Sphere : public Shape
   {
   public:
-    float radius;
+    float radius = 1.f;
+
+  public:
+    virtual bool intersect(const Ray& ray, RayHit& hit) const override;
+  };
+
+  class TriangleMesh : public Shape
+  {
+  public:
+    uint32 tri_count = 0;
+    std::unique_ptr<Vec3f[]> vertices = nullptr;
+    std::unique_ptr<uint32[]> indices = nullptr;
 
   public:
     virtual bool intersect(const Ray& ray, RayHit& hit) const override;

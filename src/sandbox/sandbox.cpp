@@ -26,10 +26,21 @@ void create_scene(Scene& scene, PinholeCamera& camera)
   SceneShape<Sphere> sphere(scene);
   sphere->radius = 1.f;
 
+  SceneShape<TriangleMesh> mesh(scene);
+  mesh->tri_count = 1;
+  mesh->vertices = std::make_unique<Vec3f[]>(3);
+  mesh->indices = std::make_unique<uint32[]>(3);
+  mesh->vertices[0] = Vec3f(-1.0f, 1.f, 0.f);
+  mesh->vertices[1] = Vec3f(3.0f, 1.f, -1.f);
+  mesh->vertices[2] = Vec3f(1.f, 3.f, 0.f);
+  mesh->indices[0] = 0;
+  mesh->indices[1] = 1;
+  mesh->indices[2] = 2;
+
   // materials
-  SceneMaterial<Lambertian> lambert_red(scene);
-  lambert_red->albedo = Vec3f(0.75, 0.25, 0.25);
-  lambert_red->emission = Vec3f::zero;
+  SceneMaterial<Lambertian> lambert(scene);
+  lambert->albedo = Vec3f(0.75, 0.25, 0.25);
+  lambert->emission = Vec3f::zero;
 
   SceneMaterial<Lambertian> emissive(scene);
   emissive->albedo = Vec3f::zero;
@@ -38,13 +49,14 @@ void create_scene(Scene& scene, PinholeCamera& camera)
   SceneMaterial<Metal> metal(scene);
   metal->albedo = 0.8f * Vec3f::one;
   metal->emission = Vec3f::zero;
-  metal->roughness = 0.2f;
+  metal->roughness = 0.f;
 
   // instances
-  new_instance(scene, sphere, lambert_red,  translate(-1.0f, 1.f, 0.f));
-  new_instance(scene, sphere, metal,        translate(3.0f, 1.f, -1.f));
-  new_instance(scene, sphere, emissive,     translate(1.f, 3.f, 0.f));
-  new_instance(scene, sphere, metal,        translate(0.f, -500.f, 0.f) * scale(500.f));
+  new_instance(scene, sphere, lambert,  translate(-1.0f, 1.f, 0.f));
+  new_instance(scene, sphere, metal,    translate(3.0f, 1.f, -1.f));
+  new_instance(scene, sphere, emissive, translate(1.f, 3.f, 0.f));
+  new_instance(scene, sphere, metal,    translate(0.f, -500.f, 0.f) * scale(500.f));
+  new_instance(scene, mesh, lambert, translate(0.0f, 0.f, 0.f));
 }
 
 int main(int, char**)
@@ -55,19 +67,22 @@ int main(int, char**)
   create_scene(scene, camera);
 
   // film
-  Film film(512, 512);
+  Film film(1024, 1024);
 
   // reconstruction filter
-  BoxFilter filter(1.f, 1.f);
+  BoxFilter filter(1.f);
 
   // integrator
+
   SimpleIntegrator integrator;
-  integrator.max_bounce = 6;
+  integrator.max_bounce = 12;
   integrator.sky_radiance = Vec3f(0.7f, 0.2f, 0.2f);
+  
+  //DebugIntegrator integrator;
 
   // renderer
   SimpleRenderer renderer;
-  renderer.spp = 128;
+  renderer.spp = 1024;
   renderer.tile_size = 16;
 
   // start rendering
