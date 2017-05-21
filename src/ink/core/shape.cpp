@@ -39,7 +39,13 @@ namespace ink
 
     for (uint32 i = 0; i < tri_count; ++i)
     {
+      const uint32 index1 = indices[i * 3];
+      const uint32 index2 = indices[i * 3 + 1];
+      const uint32 index3 = indices[i * 3 + 2];
       
+      const Vec3f& p1 = vertices[index1];
+      const Vec3f& p2 = vertices[index2];
+      const Vec3f& p3 = vertices[index3];
       
       const Vec3f e1 = p2 - p1;
       const Vec3f e2 = p3 - p1;
