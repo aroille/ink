@@ -6,6 +6,7 @@
 #include "core/camera.h"
 #include "core/material.h"
 #include "math/ray.h"
+#include "core/log.h"
 
 #include <omp.h>
 
@@ -36,7 +37,7 @@ namespace ink
 
   void SimpleRenderer::thread_task()
   {
-    RandomGenerator prim_generator(0.0f, 1.0f);
+    RandomGenerator prim_generator( 0.5f - 0.5f*filter->extent, 0.5f + 0.5f*filter->extent);
     RandomGenerator diffuse_generator(-1.0f, 1.0f);
 
     for (;;)
@@ -44,6 +45,9 @@ namespace ink
       uint32 tile_id = next_tile++;
       if (tile_id >= tile_count)
         break;
+
+      if (tile_id % 20 == 0)
+        INK_LOG_INFO("" << 100 * tile_id / tile_count << " %%");
 
       prim_generator.seed(tile_id * random_seed);
       diffuse_generator.seed(tile_id * random_seed);
