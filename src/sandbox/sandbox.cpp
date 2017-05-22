@@ -8,12 +8,83 @@
 #include "core/shape.h"
 #include "core/material.h"
 
+#include "helper_shape.h"
+
 using namespace ink;
 
 //void scene_cornell_box(Scene& scene, PinholeCamera& camera);
 //void scene_debug(InkRenderer& ink, PinholeCamera& camera);
+void create_sphere_and_triangle_scene(Scene& scene, PinholeCamera& camera);
+void create_cornell_box_scene(Scene& scene, PinholeCamera& camera);
 
-void create_scene(Scene& scene, PinholeCamera& camera)
+int main(int, char**)
+{
+  Scene scene;
+  PinholeCamera camera;
+  create_cornell_box_scene(scene, camera);
+
+  SimpleIntegrator integrator;
+  integrator.max_bounce = 8;
+  integrator.sky_radiance = Vec3f(0.0f, 0.0f, 0.0f);
+
+  SimpleRenderer renderer;
+  renderer.spp = 1024;
+  renderer.tile_size = 16;
+
+  Film film(900, 900);
+  BoxFilter filter(1.f);
+
+  // start rendering
+  renderer.start(integrator, scene, camera, film, filter);
+
+  saveImage(film, "test.ppm");
+  system("\"C:\\Program Files (x86)\\XnView\\xnview.exe\" test.ppm");
+
+  return 0; 
+}
+
+void create_cornell_box_scene(Scene& scene, PinholeCamera& camera)
+{
+  // camera
+  camera.fov = 50.f;
+  camera.transform = translate(0.f, 0.f, 5.f + 5.f / tan(0.5f * radians(camera.fov)));
+  
+  // shapes
+  SceneShape<TriangleMesh> quad(scene);
+  helper::create_quad(quad);
+
+  SceneShape<Sphere> sphere(scene);
+  sphere->radius = 1.f;
+
+  // materials
+  SceneMaterial<Lambertian> red_lambert(scene);
+  red_lambert->albedo = Vec3f(0.75f, 0.25f, 0.25f);
+
+  SceneMaterial<Lambertian> green_lambert(scene);
+  green_lambert->albedo = Vec3f(0.25f, 0.75f, 0.25f);
+
+  SceneMaterial<Lambertian> white_lambert(scene);
+  white_lambert->albedo = Vec3f(0.75f, 0.75f, 0.75f);
+
+  SceneMaterial<Lambertian> emissive(scene);
+  emissive->albedo = Vec3f(0.f, 0.f, 0.f);
+  emissive->emission = Vec3f::one * 10.f;
+
+  SceneMaterial<Metal> metal(scene);
+  metal->albedo = Vec3f(0.98f, 0.98f, 0.98f);
+  metal->roughness = 0.0f;
+ 
+  // instances
+  new_instance(scene, quad, white_lambert, translate(0.0f, 0.0f, -5.f) * scale(10.f));
+  new_instance(scene, quad, red_lambert,   translate( -5.0f, 0.0f, 0.f) * rotate_y(90.f) * scale(10.f));
+  new_instance(scene, quad, green_lambert, translate(5.0f, 0.0f, 0.f) * rotate_y(-90.f) * scale(10.f));
+  new_instance(scene, quad, white_lambert, translate(0.0f, 5.0f, 0.f) * rotate_x(90.f) * scale(10.f));
+  new_instance(scene, quad, white_lambert, translate(0.0f, -5.0f, 0.f) * rotate_x(-90.f) * scale(10.f));
+  new_instance(scene, quad, emissive, translate(0.0f, 4.9999f, 0.f) * rotate_x(90.f) * scale(4.f));
+  new_instance(scene, sphere, metal, translate(-2.f, -3.f, -2.f) * scale(2.f));
+}
+
+void create_sphere_and_triangle_scene(Scene& scene, PinholeCamera& camera)
 {
   // Camera
   camera.fov = 45.f;
@@ -52,46 +123,11 @@ void create_scene(Scene& scene, PinholeCamera& camera)
   metal->roughness = 0.f;
 
   // instances
-  new_instance(scene, sphere, lambert,  translate(-1.0f, 1.f, 0.f));
-  new_instance(scene, sphere, metal,    translate(3.0f, 1.f, -1.f));
+  new_instance(scene, sphere, lambert, translate(-1.0f, 1.f, 0.f));
+  new_instance(scene, sphere, metal, translate(3.0f, 1.f, -1.f));
   new_instance(scene, sphere, emissive, translate(1.f, 3.f, 0.f));
-  new_instance(scene, sphere, metal,    translate(0.f, -500.f, 0.f) * scale(500.f));
+  new_instance(scene, sphere, metal, translate(0.f, -500.f, 0.f) * scale(500.f));
   new_instance(scene, mesh, lambert, translate(0.0f, 0.f, 0.f));
-}
-
-int main(int, char**)
-{
-  // scene
-  Scene scene;
-  PinholeCamera camera;
-  create_scene(scene, camera);
-
-  // film
-  Film film(1024, 1024);
-
-  // reconstruction filter
-  BoxFilter filter(1.f);
-
-  // integrator
-
-  SimpleIntegrator integrator;
-  integrator.max_bounce = 12;
-  integrator.sky_radiance = Vec3f(0.7f, 0.2f, 0.2f);
-  
-  //DebugIntegrator integrator;
-
-  // renderer
-  SimpleRenderer renderer;
-  renderer.spp = 1024;
-  renderer.tile_size = 16;
-
-  // start rendering
-  renderer.start(integrator, scene, camera, film, filter);
-  
-  // result
-  saveImage(film, "test.ppm");
-  system("\"C:\\Program Files (x86)\\XnView\\xnview.exe\" test.ppm");
-  return 0; 
 }
 
 /*
