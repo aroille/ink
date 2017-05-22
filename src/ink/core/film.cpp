@@ -28,14 +28,14 @@ namespace ink
 
   static int to_int(float x)
   {
-    //return int(pow(clamp(x), 1 / 2.2) * 255 + .5);
-    return int(clamp(x) * 255 + .5);
+    return int(pow(clamp(x), 1 / 2.2) * 255 + .5);
+    //return int(clamp(x) * 255 + .5);
   }
 
   bool saveImage(const Film& film, const char* filepath)
   {
     FILE *f; // Write image to PPM file. 
-    if (fopen_s(&f, filepath, "w"))
+    if (fopen_s(&f, filepath, "w") || !f)
     {    
       INK_LOG_ERROR("Can't open file: " << filepath);
       return false;
