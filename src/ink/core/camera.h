@@ -31,8 +31,8 @@ namespace ink
   class PinholeCamera : public Camera
   {
   public:
-    float             fov;        // field of view (in degrees) 
-    Transform         transform;  // (world space)
+    float      fov = 45.f;                      // field of view (in degrees) 
+    Transform  transform = Transform::identity; // (world space)
 
   private:
     ProjectionMatrix  proj;

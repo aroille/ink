@@ -45,11 +45,15 @@ namespace ink
     friend Transform inverse(const Transform& t);
     friend Transform transpose(const Transform& t);
 
+    // Static constants
+    static const Transform identity;
+
   private:
     Matrix4x4 m;
     Matrix4x4 m_inv;
   };
 
+  //================================================================================
   Transform translate(float x, float y, float z);
   Transform scale(float x, float y, float z);
   Transform scale(float s);

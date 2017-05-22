@@ -133,6 +133,8 @@ namespace ink
     return Matrix4x4(minv);
   }
 
+  const Transform Transform::identity = Transform(Matrix4x4(), Matrix4x4());
+
   Transform::Transform(const float mat[4][4])
   {
     m = Matrix4x4(mat[0][0], mat[0][1], mat[0][2], mat[0][3],
@@ -169,7 +171,7 @@ namespace ink
   {
     return Transform(Matrix4x4::mul(m, t2.m), Matrix4x4::mul(t2.m_inv, m_inv));
   }
-
+  
   Transform inverse(const Transform& t)
   {
     return Transform(t.m_inv, t.m);
