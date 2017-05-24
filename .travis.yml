@@ -7,4 +7,5 @@ os:
   
 script:
   - mkdir build
-  - cmake -G "Unix Makefiles" build/ && make
+  - cd build
+  - cmake -G "Unix Makefiles" "../" && make
