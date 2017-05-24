@@ -6,6 +6,7 @@ os:
   - linux
   
 script:
+  - export OMP_NUM_THREADS=4
   - mkdir build
   - cd build
-  - cmake -G "Unix Makefiles" && make
+  - cmake -G "Unix Makefiles" "../" && make
