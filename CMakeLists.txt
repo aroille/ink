@@ -9,6 +9,7 @@ if (${CMAKE_CXX_COMPILER_ID} STREQUAL GNU OR
 elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
     set(warnings "/W4 /WX")
 	set(cxx_flags "")
+	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
 
 find_package(OpenMP)
