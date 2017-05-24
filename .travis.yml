@@ -5,4 +5,7 @@ compiler:
 os:
   - linux
   
-script: cmake -G "Unix Makefiles" && make
+script:
+  - mkdir build
+  - cd build
+  - cmake -G "Unix Makefiles" && make
