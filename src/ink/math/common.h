@@ -26,12 +26,7 @@ namespace ink
 
   inline float abs(float x)
   {
-    return std::fabs(x);
-  }
-
-  inline float sqrt(float x)
-  {
-    return std::sqrtf(x);
+    return fabs(x);
   }
 
   inline float lerp(float a, float b, float value)
