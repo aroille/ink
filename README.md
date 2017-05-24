@@ -1,4 +1,4 @@
 # ink
 Path Tracer
 
-https://travis-ci.org/aroille/ink.svg?branch=master
+[![Build Status](https://travis-ci.org/aroille/ink.svg?branch=master)](https://travis-ci.org/aroille/ink)
