@@ -37,7 +37,7 @@ namespace ink
     uint32 tile_count;
     uint32 tile_count_x;
     uint32 tile_count_y;
-    std::atomic_int32_t next_tile;
+    std::atomic<std::uint32_t> next_tile;
   };
 
 }    // namespace ink
