@@ -1,9 +1,11 @@
 language: cpp
+
+dist: trusty
+sudo: required
+
 compiler:
   - clang
   - gcc
-os:
-  - linux
   
 script:
   - export OMP_NUM_THREADS=4
