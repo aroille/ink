@@ -52,7 +52,7 @@ namespace ink
   const Vector3<T> Vector3<T>::unit_y = Vector3<T>(0, 1, 0);
 
   template<typename T>
-  const Vector3<T> Vector3<T>::unit_z = Vector3<T>(0, 0 1);
+  const Vector3<T> Vector3<T>::unit_z = Vector3<T>(0, 0, 1);
 
   template<typename T>
   const Vector3<T> Vector3<T>::one = Vector3<T>(1, 1, 1);
