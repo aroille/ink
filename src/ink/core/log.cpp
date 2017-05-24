@@ -37,11 +37,7 @@ namespace ink
       msg.str().c_str(), "\n");
 
     // output log message
-    printf(msg_buffer);
-
-    #ifdef _MSC_VER
-      OutputDebugStringA(msg_buffer);
-    #endif
+    printf("%s", msg_buffer);
   }
 
 }	// namespace ink

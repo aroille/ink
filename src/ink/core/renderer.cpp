@@ -47,7 +47,7 @@ namespace ink
         break;
 
       if (tile_id % 20 == 0)
-        INK_LOG_INFO("" << 100 * tile_id / tile_count << " %%");
+        INK_LOG_INFO("" << 100 * tile_id / tile_count << " %");
 
       prim_generator.seed(tile_id * random_seed);
       diffuse_generator.seed(tile_id * random_seed);

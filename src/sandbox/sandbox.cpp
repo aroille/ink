@@ -28,7 +28,7 @@ int main(int, char**)
   integrator.sky_radiance = Vec3f(0.0f, 0.0f, 0.0f);
 
   SimpleRenderer renderer;
-  renderer.spp = 1024;
+  renderer.spp = 1;
   renderer.tile_size = 16;
 
   Film film(900, 900);
