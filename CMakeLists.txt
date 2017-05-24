@@ -1,13 +1,14 @@
-cmake_minimum_required(VERSION 3.4.1 FATAL_ERROR)
+cmake_minimum_required(VERSION 2.8.7 FATAL_ERROR)
 
 project("INK")
 
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR
-    "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang") 
+if (${CMAKE_CXX_COMPILER_ID} STREQUAL GNU OR
+    ${CMAKE_CXX_COMPILER_ID} STREQUAL Clang)
     set(warnings "-Wall -Wextra -Werror")
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
     set(warnings "/W4 /WX")
 endif()
+
 set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} ${warnings} /openmp")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${warnings} /openmp")
 
