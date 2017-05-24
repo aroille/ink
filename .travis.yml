@@ -5,4 +5,4 @@ compiler:
 os:
   - linux
   
-script: cmake -G "Unix Makefile" && make
+script: cmake -G "Unix Makefiles" && make
