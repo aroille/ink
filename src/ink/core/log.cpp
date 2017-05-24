@@ -1,5 +1,3 @@
-#pragma once
-
 #include "core/log.h"
 
 #include <ctime>
@@ -27,27 +25,22 @@ namespace ink
   {
     // get time
     time_t t = std::time(0);
-    #pragma warning( push )
-    #pragma warning( disable : 4996 )
     tm* now = localtime(&t);
-    #pragma warning( pop )
 
     // output format
     char msg_buffer[512];
 
-    sprintf_s(msg_buffer, sizeof(msg_buffer), "  %-8s  %04d-%02d-%02d %02d:%02d:%02d  %s",
+    sprintf(msg_buffer, "  %-8s  %04d-%02d-%02d %02d:%02d:%02d  %s%s",
       LogLevelString[(unsigned)level],
       now->tm_year + 1900, now->tm_mon + 1, now->tm_mday,
       now->tm_hour, now->tm_min, now->tm_sec,
-      msg.str().c_str());
+      msg.str().c_str(), "\n");
 
     // output log message
     printf(msg_buffer);
-    printf("\n");
 
     #ifdef _MSC_VER
       OutputDebugStringA(msg_buffer);
-      OutputDebugStringA("\n");
     #endif
   }
 
