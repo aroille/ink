@@ -5,10 +5,10 @@ os: linux
 addons:
   apt:
     sources:
-	  - ubuntu-toolchain-r-test
+      - ubuntu-toolchain-r-test
       - llvm-toolchain-precise-3.8
     packages:
-	- g++-6
+    - g++-6
     - clang-3.8
 	
 env: CC=gcc-6 CXX=g++-6
