@@ -11,8 +11,6 @@ addons:
     - g++-6
     - clang-3.8
 	
-env: CC=gcc-6 CXX=g++-6
-  
 compiler:
   - clang
   - gcc
