@@ -13,7 +13,6 @@ elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
 endif()
 
 find_package(OpenMP)
-set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} ${warnings} ${OpenMP_C_FLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${warnings} ${cxx_flags} ${OpenMP_CXX_FLAGS}")
 
 message ("cxx Flags: " ${CMAKE_CXX_FLAGS})
