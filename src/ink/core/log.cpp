@@ -10,7 +10,7 @@
 
 namespace ink
 {
-  const Log Log::instance;
+  const Log Log::instance = {};
 
   char LogLevelString[(unsigned)Log::Level::Count][8] =
   {
