@@ -8,7 +8,6 @@ namespace ink
 {
   class Shape;
   class Material;
-  class Camera;
 
   struct Instance
   {

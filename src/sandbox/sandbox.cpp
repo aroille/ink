@@ -12,10 +12,8 @@
 
 using namespace ink;
 
-//void scene_cornell_box(Scene& scene, PinholeCamera& camera);
-//void scene_debug(InkRenderer& ink, PinholeCamera& camera);
-void create_sphere_and_triangle_scene(Scene& scene, PinholeCamera& camera);
 void create_cornell_box_scene(Scene& scene, PinholeCamera& camera);
+void create_sphere_and_triangle_scene(Scene& scene, PinholeCamera& camera);
 
 int main(int, char**)
 {
@@ -99,8 +97,8 @@ void create_sphere_and_triangle_scene(Scene& scene, PinholeCamera& camera)
 
   SceneShape<TriangleMesh> mesh(scene);
   mesh->tri_count = 1;
-  mesh->vertices = std::make_unique<Vec3f[]>(3);
-  mesh->indices = std::make_unique<uint32[]>(3);
+  mesh->vertices.reset(new Vec3f[3]);
+  mesh->indices.reset(new uint32[3]);
   mesh->vertices[0] = Vec3f(-1.0f, 1.f, 0.f);
   mesh->vertices[1] = Vec3f(3.0f, 1.f, -1.f);
   mesh->vertices[2] = Vec3f(1.f, 3.f, 0.f);
