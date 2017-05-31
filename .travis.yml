@@ -10,11 +10,11 @@ addons:
     packages:
       - g++-6
       - clang-3.8
-	
+
 compiler:
   - clang
   - gcc
-  
+
 script:
   - export OMP_NUM_THREADS=4
   - mkdir build
