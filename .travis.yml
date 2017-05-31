@@ -27,6 +27,9 @@ matrix:
       env:
         - MATRIX_EVAL="CC=clang-3.8 && CXX=clang++-3.8"
 
+before_install:
+    - eval "${MATRIX_EVAL}"		
+
 script:
   - export OMP_NUM_THREADS=4
   - mkdir build
