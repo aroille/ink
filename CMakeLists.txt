@@ -2,10 +2,12 @@ cmake_minimum_required(VERSION 2.8.7 FATAL_ERROR)
 
 project("INK")
 
-if (${CMAKE_CXX_COMPILER_ID} STREQUAL GNU OR
-    ${CMAKE_CXX_COMPILER_ID} STREQUAL Clang)
+if (${CMAKE_CXX_COMPILER_ID} STREQUAL GNU)
     set(warnings "-Wall -Wextra -Werror")
 	set(cxx_flags "-std=c++11 -fopenmp")
+elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL Clang)
+    set(warnings "-Wall -Wextra -Werror")
+	set(cxx_flags "-std=c++11 -fopenmp -I/usr/include")
 elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
     set(warnings "/W4 /WX")
 	set(cxx_flags "")
