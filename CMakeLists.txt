@@ -10,12 +10,12 @@ elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL Clang)
 	set(cxx_flags "-std=c++11 -fopenmp -I/usr/lib/gcc/x86_64-linux-gnu/6/include/")
 elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
     set(warnings "/W4 /WX")
-	set(cxx_flags "")
+	set(cxx_flags "/openmp")
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
 
 find_package(OpenMP)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${warnings} ${cxx_flags} ${OpenMP_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${warnings} ${cxx_flags}")
 
 message ("cxx Flags: " ${CMAKE_CXX_FLAGS})
 
