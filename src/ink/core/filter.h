@@ -17,7 +17,6 @@ namespace ink
   public:
     BoxFilter(float width)
       : Filter(width)
-      , width(width)
       , half_width(0.5f * width)
     {}
 
@@ -29,7 +28,6 @@ namespace ink
     }
 
   private:
-    float width;
     float half_width;
   };
 
@@ -38,7 +36,6 @@ namespace ink
   public:
     TriangleFilter(float width)
       : Filter(width)
-      , width(width)
       , half_width(0.5f * width)
     {}
 
@@ -48,7 +45,6 @@ namespace ink
     }
 
   private:
-    float width;
     float half_width;
   };
 
