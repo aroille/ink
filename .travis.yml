@@ -32,8 +32,6 @@ before_install:
 
 script:
   - export OMP_NUM_THREADS=4
-  - find /usr -type f -name "omp.h"
-  - locate omp.h
   - mkdir build
   - cd build
   - cmake -G "Unix Makefiles" "../" && make
