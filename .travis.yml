@@ -25,6 +25,7 @@ matrix:
           packages:
             - g++-6
             - clang-3.8
+            - libiomp-dev
       env:
         - MATRIX_EVAL="CC=clang-3.8 && CXX=clang++-3.8"
 
@@ -34,6 +35,8 @@ before_install:
 script:
   - export OMP_NUM_THREADS=4
   - find /usr -name "liomp5"
+  - find /usr -name "lomp"
+  - find /usr -name "libiomp5"
   - mkdir build
   - cd build
   - cmake -G "Unix Makefiles" "../" && make
