@@ -33,7 +33,7 @@ before_install:
 
 script:
   - export OMP_NUM_THREADS=4
-  - find /usr -name "libiomp5"
+  - find /usr -name "liomp5"
   - mkdir build
   - cd build
   - cmake -G "Unix Makefiles" "../" && make
