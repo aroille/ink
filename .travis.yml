@@ -33,6 +33,7 @@ before_install:
 
 script:
   - export OMP_NUM_THREADS=4
+  - find /usr/ type file -name libomp 
   - mkdir build
   - cd build
   - cmake -G "Unix Makefiles" "../" && make
