@@ -16,7 +16,7 @@ namespace ink
     if (intersect(*scene, ray, hit))
     {
       const Instance& instance = scene->instances[hit.instance_id];
-      const Material* material = scene->materials[instance.material_id];
+      const Material* material = scene->materials[instance.material_id].get();
 
       // post intersect
       hit.n = normalize(transform_vec(scene->instances[hit.instance_id].object_to_world, hit.n));

@@ -1,8 +1,9 @@
 #pragma once
 
-#include <vector>
 #include "math/common.h"
 #include "math/transform.h"
+#include <memory>
+#include <vector>
 
 namespace ink
 {
@@ -19,8 +20,8 @@ namespace ink
 
   struct Scene
   {
-    std::vector<Shape*>    shapes;
-    std::vector<Material*> materials;
+    std::vector<std::unique_ptr<Shape>>    shapes;
+    std::vector<std::unique_ptr<Material>> materials;
     std::vector<Instance>  instances;
   };
 
@@ -37,7 +38,7 @@ namespace ink
       : ptr(new Type())
       , id({(uint32)scene.shapes.size()})
     {
-      scene.shapes.push_back(ptr);
+      scene.shapes.push_back(std::unique_ptr<Shape>(ptr));
     }
 
     Type* operator->() { return ptr; }
@@ -56,7 +57,7 @@ namespace ink
       : ptr(new Type())
       , id({(uint32)scene.materials.size()})
     {
-      scene.materials.push_back(ptr);
+      scene.materials.push_back(std::unique_ptr<Material>(ptr));
     }
 
     Type* operator->() { return ptr; }
