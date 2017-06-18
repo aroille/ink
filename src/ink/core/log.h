@@ -8,7 +8,6 @@
   ink::Log::instance.log(ss); \
 }
 
-#define INK_LOG_INFO(msg)		  INK_LOG(ink::Log::Level::Info,    msg);
 namespace ink
 {
   struct Log
