@@ -37,7 +37,7 @@ namespace ink
     FILE *f = fopen(filepath, "w"); // Write image to PPM file. 
     if (!f)
     {
-      INK_LOG_ERROR("Can't open file: " << filepath);
+      INK_LOG("Error: Can't open file: " << filepath);
       return false;
     }
 
@@ -52,7 +52,7 @@ namespace ink
 
     fclose(f);
 
-    INK_LOG_INFO("Result saved: " << filepath);
+    INK_LOG("Result saved: " << filepath);
     return true;
   }
 
