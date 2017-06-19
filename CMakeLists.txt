@@ -1,23 +1,42 @@
-cmake_minimum_required(VERSION 2.8.7 FATAL_ERROR)
+CMAKE_MINIMUM_REQUIRED ( VERSION 2.8 )
 
-project("INK")
+PROJECT("INK")
 
-if (${CMAKE_CXX_COMPILER_ID} STREQUAL GNU)
-    set(warnings "-Wall -Wextra -Werror")
-	set(cxx_flags "-std=c++11 -fopenmp")
-elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL Clang)
-    set(warnings "-Wall -Wextra -Werror")
-	set(cxx_flags "-std=c++11 -fopenmp=libiomp5 -I/usr/lib/gcc/x86_64-linux-gnu/6/include/")
-elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
-    set(warnings "/W4 /WX")
-	set(cxx_flags "/openmp")
-	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+### GLFW #############################
+
+if(NOT IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src/3rdparty/glfw")
+  message(FATAL_ERROR "The GLFW submodule directory is missing! "
+    "You probably did not clone the project with --recursive. It is possible to recover "
+    "by running \"git submodule update --init --recursive\"")
 endif()
 
-find_package(OpenMP)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${warnings} ${cxx_flags}")
+SET(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+SET(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+SET(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+ADD_SUBDIRECTORY(src/3rdparty/glfw)
 
-message ("cxx Flags: " ${CMAKE_CXX_FLAGS})
+### OPENMP ############################
 
-add_subdirectory(src)
+FIND_PACKAGE(OpenMP)
+
+### COMPILE FLAGS #####################
+
+if (${CMAKE_CXX_COMPILER_ID} STREQUAL GNU)
+	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
+elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL Clang)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
+	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
+elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
+	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -openmp")
+	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /WX")
+	ADD_DEFINITIONS (/D _CRT_SECURE_NO_WARNINGS)
+endif()
+
+message ("CXX COMPILER: " ${CMAKE_CXX_COMPILER_ID})
+message ("CXX FLAGS: " ${CMAKE_CXX_FLAGS})
+
+ADD_SUBDIRECTORY(src)
 
