@@ -1,4 +1,4 @@
 add_subdirectory(ink)
-add_subdirectory(viewer)
-add_subdirectory(sandbox)
+add_subdirectory(inker)
+add_subdirectory(press)
 

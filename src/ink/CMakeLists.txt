@@ -1,11 +1,14 @@
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
-file (GLOB CORE_SOURCES "core/*.h" "core/*.cpp")
-file (GLOB MATH_SOURCES "math/*.h" "math/*.cpp")
+FILE (GLOB CORE_SOURCES "core/*.h" "core/*.cpp")
+FILE (GLOB MATH_SOURCES "math/*.h" "math/*.cpp")
 
-source_group("core" FILES ${CORE_SOURCES})
-source_group("math" FILES ${MATH_SOURCES})
+SOURCE_GROUP("core" FILES ${CORE_SOURCES})
+SOURCE_GROUP("math" FILES ${MATH_SOURCES})
 
-add_library(ink STATIC ${CORE_SOURCES} ${MATH_SOURCES})
+ADD_LIBRARY(ink STATIC ${CORE_SOURCES} ${MATH_SOURCES})
 
-install (TARGETS ink DESTINATION ${PROJECT_BINARY_DIR}/bin)
+message ("PROJECT_BINARY_DIR: " ${PROJECT_BINARY_DIR})
+
+
+INSTALL (TARGETS ink DESTINATION ${PROJECT_BINARY_DIR}/bin)

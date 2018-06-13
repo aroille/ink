@@ -14,10 +14,14 @@ namespace ink
     inline uint32 width() const  { return w; }
     inline uint32 height() const { return h; }
 
-    void           clear();
-    const Vec3f*   data_ptr() const { return data; }
+    void          resize(uint32 w, uint32 h);
 
-    void           accumulate(uint32 x, uint32 y, Vec3f value);
+    void          clear();
+    const Vec3f*  data_ptr() const { return data; }
+
+    void          accumulate(uint32 x, uint32 y, Vec3f value);
+
+    bool          save(const char* filepath) const;
 
   private:
     Vec3f* data;
@@ -25,7 +29,7 @@ namespace ink
     uint32 h;
   };
 
-  bool saveImage(const Film& film, const char* filepath);
+
 
 }	// namespace ink
 

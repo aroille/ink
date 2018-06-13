@@ -2,21 +2,21 @@
 
 namespace ink
 {
-  class Filter
+  class ReconstructionFilter
   {
   public:
-    Filter(float extent) : extent(extent){}
+    ReconstructionFilter(float extent) : extent(extent){}
     virtual float eval(float relative_x, float relative_y) const = 0;
 
   public:
     float extent;
   };
 
-  class BoxFilter : public Filter
+  class BoxFilter : public ReconstructionFilter
   {
   public:
     BoxFilter(float width)
-      : Filter(width)
+      : ReconstructionFilter(width)
       , half_width(0.5f * width)
     {}
 
@@ -31,11 +31,11 @@ namespace ink
     float half_width;
   };
 
-  class TriangleFilter : public Filter
+  class TriangleFilter : public ReconstructionFilter
   {
   public:
     TriangleFilter(float width)
-      : Filter(width)
+      : ReconstructionFilter(width)
       , half_width(0.5f * width)
     {}
 
@@ -48,11 +48,11 @@ namespace ink
     float half_width;
   };
 
-  class GaussianFilter : public Filter
+  class GaussianFilter : public ReconstructionFilter
   {
   public:
     GaussianFilter(float width, float alpha) 
-      : Filter(width)
+      : ReconstructionFilter(width)
       , alpha(alpha)
       , offset(expf(-alpha * width * width))
     {}

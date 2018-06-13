@@ -8,11 +8,13 @@
 #include "math/ray.h"
 #include "core/log.h"
 
+#ifdef _OPENMP
 #include <omp.h>
+#endif
 
 namespace ink
 { 
-  void SimpleRenderer::start(Integrator& integrator, Scene& scene, Camera& camera, Film& film, Filter& filter)
+  void SimpleRenderer::start(Integrator& integrator, Scene& scene, Camera& camera, Film& film, ReconstructionFilter& filter)
   {
     this->integrator = &integrator;
     this->scene = &scene;
@@ -46,11 +48,12 @@ namespace ink
       if (tile_id >= tile_count)
         break;
 
-      if (tile_id % 20 == 0)
-        INK_LOG("" << 100 * tile_id / tile_count << " %");
+      //if (tile_id % 20 == 0)
+      //  INK_LOG("" << 100 * tile_id / tile_count << " %");
 
-      prim_generator.seed(tile_id * random_seed);
-      diffuse_generator.seed(tile_id * random_seed);
+      // We need to use tile_id+1 here, else the first tile always use 0 as seed
+      prim_generator.seed( (tile_id+1) * random_seed);
+      diffuse_generator.seed( (tile_id+1) * random_seed);
 
       // get limits of the tile
       uint32 tile_y = tile_id / tile_count_x;
@@ -77,7 +80,7 @@ namespace ink
             camera->generate_ray(x, y, ray, raster_coord, prim_generator);
 
             float w = filter->eval(pixel_center_x - raster_coord.x, pixel_center_y - raster_coord.y);
-            radiance += integrator->radiance(ray, diffuse_generator) * w;
+            radiance += integrator->radiance(ray, diffuse_generator) * w;;
             weigth += w;
           }
 

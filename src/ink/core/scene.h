@@ -45,8 +45,8 @@ namespace ink
     operator ShapeId() const { return id; }
 
   private:
-    Type* ptr;
-    ShapeId id;
+    Type*   const ptr;
+    ShapeId const id;
   };
 
   struct MaterialId { uint32 id; };
@@ -64,8 +64,8 @@ namespace ink
     operator MaterialId() const { return id; }
 
   private:
-    Type* ptr;
-    MaterialId id;
+    Type*      const ptr;
+    MaterialId const id;
   };
 
   inline void new_instance(Scene& scene, ShapeId shape, MaterialId material, const Transform& transform)

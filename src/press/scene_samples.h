@@ -45,8 +45,8 @@ void create_cornell_box_scene(Scene& scene, PinholeCamera& camera)
   new_instance(scene, quad, green_lambert, translate(5.0f, 0.0f, 0.f) * rotate_y(-90.f) * scale(10.f));
   new_instance(scene, quad, white_lambert, translate(0.0f, 5.0f, 0.f) * rotate_x(90.f) * scale(10.f));
   new_instance(scene, quad, white_lambert, translate(0.0f, -5.0f, 0.f) * rotate_x(-90.f) * scale(10.f));
+  new_instance(scene, sphere, white_lambert, translate(-2.f, -3.f, -2.f) * scale(2.f));
   new_instance(scene, quad, emissive, translate(0.0f, 4.9999f, 0.f) * rotate_x(90.f) * scale(4.f));
-  new_instance(scene, sphere, metal, translate(-2.f, -3.f, -2.f) * scale(2.f));
 }
 
 void create_sphere_and_triangle_scene(Scene& scene, PinholeCamera& camera)
