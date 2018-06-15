@@ -12,6 +12,7 @@ namespace ink
   struct Ray;
   class ReconstructionFilter;
   class Integrator;
+  struct RenderStats;
 
   class SimpleRenderer
   {
@@ -21,10 +22,10 @@ namespace ink
     uint32 random_seed  = 1234;
 
   public:
-    void start(Integrator& integrator, Scene& scene, Camera& camera, Film& film, ReconstructionFilter& filter);
+    void start(Integrator& integrator, Scene& scene, Camera& camera, Film& film, ReconstructionFilter& filter, RenderStats& stats);
 
   private:
-    void thread_task();
+    void thread_task(RenderStats& stats);
 
   private:
     Integrator*                integrator;

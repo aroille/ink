@@ -52,9 +52,69 @@ namespace ink
     virtual void scatter(const Ray& ray_in, const RayHit& hit, Ray& ray_out, Vec3f& attenuation, RandomGenerator& gen) const override
     {
       ray_out.o = ray_in.o + hit.t * ray_in.d;
-      ray_out.d = reflection(ray_in.d, hit.n) + roughness * random_in_unit_sphere(gen);
+      ray_out.d = reflect(ray_in.d, hit.n) + roughness * random_in_unit_sphere(gen);
 
       attenuation = albedo;
+    }
+  };
+
+  // DIELECTRIC
+  class Dielectric : public Material
+  {
+  public:
+    float ri = 1.3f;
+
+  public:
+    virtual void scatter(const Ray& ray_in, const RayHit& hit, Ray& ray_out, Vec3f& attenuation, RandomGenerator& gen) const override
+    {
+      auto schlick = [](float cosine, float ri) -> float
+      {
+        float r0 = (1 - ri) / (1 + ri);
+        r0 = r0*r0;
+        return r0 + (1 - r0)*powf(1 - cosine, 5);
+      };
+
+      auto RandomFloat01 = [](RandomGenerator& gen) -> float
+      {
+        return (gen() + 1)*0.5f;
+      };
+
+      ray_out.o = ray_in.o + hit.t * ray_in.d;
+
+      Vec3f outwardN;
+      Vec3f rdir = ray_in.d;
+
+      Vec3f refl = reflect(rdir, hit.n);
+      float nint;
+      attenuation = Vec3f(1, 1, 1);
+      Vec3f refr;
+      float reflProb;
+      float cosine;
+      if (dot(rdir, hit.n) > 0)
+      {
+        outwardN = -hit.n;
+        nint = ri;
+        cosine = ri * dot(rdir, hit.n);
+      }
+      else
+      {
+        outwardN = hit.n;
+        nint = 1.0f / ri;
+        cosine = -dot(rdir, hit.n);
+      }
+      if (refract(rdir, outwardN, nint, refr))
+      {
+        reflProb = schlick(cosine, ri);
+      }
+      else
+      {
+        reflProb = 1;
+      }
+
+      if (RandomFloat01(gen) < reflProb)
+        ray_out.d = normalize(refl);
+      else
+        ray_out.d = normalize(refr);
     }
   };
 

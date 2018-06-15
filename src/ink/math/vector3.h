@@ -217,9 +217,23 @@ namespace ink
 
   //================================================================================
   template <typename T>
-  inline Vector3<T> reflection(Vector3<T> const& in, Vector3<T> const& normal)
+  inline Vector3<T> reflect(Vector3<T> const& in, Vector3<T> const& normal)
   {
     return in - normal * (2.f * dot(in, normal));
+  }
+
+  //================================================================================
+  template <typename T>
+  inline bool refract(Vector3<T> const& in, Vector3<T> const& normal, float nint, Vector3<T>& out)
+  {
+    float dt = dot(in, normal);
+    float discr = 1.0f - nint * nint * (1 - dt * dt);
+    if (discr > 0)
+    {
+      out = nint * (in - normal * dt) - normal * sqrtf(discr);
+      return true;
+    }
+    return false;
   }
 
 } // namespace ink

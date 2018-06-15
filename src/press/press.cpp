@@ -17,8 +17,8 @@ int main(int, char**)
   create_cornell_box_scene(scene, camera);
 
   SimpleIntegrator integrator;
-  integrator.max_bounce = 2;
-  integrator.sky_radiance = Vec3f(0.0f, 0.0f, 0.0f);
+  integrator.max_bounce = 10;
+  integrator.sky_radiance = Vec3f(0.7f, 0.7f, 0.7f);
 
   SimpleRenderer renderer;
   renderer.spp = 128;

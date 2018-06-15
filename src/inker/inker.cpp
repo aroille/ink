@@ -13,6 +13,7 @@
 #include <GLFW/glfw3.h>
 
 #include "../press/scene_samples.h"
+#include <chrono>
 
 using namespace ink;
 
@@ -57,6 +58,9 @@ static void error_glfw_callback(int error, const char* description)
   INK_LOG("ERROR GLFW: " << description);
 }
 
+using Time = std::chrono::high_resolution_clock;
+using DurationMicro = std::chrono::duration<float, std::micro>;
+
 int main(int, char**)
 {
   Scene scene;
@@ -69,7 +73,7 @@ int main(int, char**)
 
   SimpleRenderer renderer;
   renderer.spp = 1;
-  renderer.tile_size = 16;
+  renderer.tile_size = 32;
 
   Film film(720, 720);
   BoxFilter filter(1.f);
@@ -93,6 +97,7 @@ int main(int, char**)
   glfwWindowHint(GLFW_RESIZABLE, false);
 
   window = glfwCreateWindow(film.width(), film.height(), "Inker", NULL, NULL);
+
   if (!window)
   {
     INK_LOG("ERROR GLFW: window creation failed");
@@ -170,14 +175,23 @@ int main(int, char**)
   glUniform1i(texsampler_location, 0);
 
   uint32 iteration_count = 0;
-
   while (!glfwWindowShouldClose(window))
   {
     iteration_count++;
 
     // render
     renderer.random_seed = iteration_count;
-    renderer.start(integrator, scene, camera, film, filter);
+
+    RenderStats stats = { 0 };
+    auto start = Time::now();
+    renderer.start(integrator, scene, camera, film, filter, stats);
+    auto duration = Time::now() - start;
+    float tracingTime = DurationMicro(duration).count();
+
+    // update window's title
+    char windowTitle[1024];
+    sprintf(windowTitle, "Inker - %.2f M/s - iteration %d - %.1f fps", stats.rayCount / tracingTime, iteration_count, 1000000 / tracingTime);
+    glfwSetWindowTitle(window, windowTitle);
 
     // copy texture
     for (uint32_t i = 0, size = data_copy.size(); i < size; ++i)
@@ -208,3 +222,4 @@ int main(int, char**)
    
   return EXIT_SUCCESS; 
 }
+

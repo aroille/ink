@@ -5,13 +5,15 @@
 
 namespace ink
 { 
-  Vec3f SimpleIntegrator::radiance(const Ray& ray, RandomGenerator& gen) const
+  Vec3f SimpleIntegrator::trace(const Ray& ray, RandomGenerator& gen, RenderStats& stats) const
   {
-    return radiance(ray, gen, max_bounce);
+    return trace(ray, gen, max_bounce, stats);
   }
 
-  Vec3f SimpleIntegrator::radiance(const Ray& ray, RandomGenerator& gen, int remaining_bounce) const
+  Vec3f SimpleIntegrator::trace(const Ray& ray, RandomGenerator& gen, int remaining_bounce, RenderStats& stats) const
   {
+    stats.rayCount++;
+
     RayHit hit;
     if (intersect(*scene, ray, hit))
     {
@@ -30,7 +32,7 @@ namespace ink
 
       Vec3f next_bounce_radiance = Vec3f::zero;
       if ((remaining_bounce > 0) && (attenuation.length_squared() != 0.f))
-        next_bounce_radiance = radiance(new_ray, gen, remaining_bounce - 1);
+        next_bounce_radiance = trace(new_ray, gen, remaining_bounce - 1, stats);
 
       return next_bounce_radiance * attenuation + material->emission;
     }
@@ -40,8 +42,10 @@ namespace ink
     }
   }
 
-  Vec3f DebugIntegrator::radiance(const Ray& ray, RandomGenerator& /*gen*/) const
+  Vec3f DebugIntegrator::trace(const Ray& ray, RandomGenerator& /*gen*/, RenderStats& stats) const
   {
+    stats.rayCount++;
+
     // Display thread Id
     //int thread_id = omp_get_thread_num();
     //return Vec3f((float)thread_id/7.f, 0, 0);

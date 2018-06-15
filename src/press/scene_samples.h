@@ -36,16 +36,21 @@ void create_cornell_box_scene(Scene& scene, PinholeCamera& camera)
   emissive->emission = Vec3f::one * 10.f;
 
   SceneMaterial<Metal> metal(scene);
-  metal->albedo = Vec3f(0.98f, 0.98f, 0.98f);
+  metal->albedo = Vec3f(0.9f, 0.9f, 0.9f);
   metal->roughness = 0.0f;
  
+  SceneMaterial<Dielectric> dielectric(scene);
+  dielectric->ri = 1.3f;
+
   // instances
   new_instance(scene, quad, white_lambert, translate(0.0f, 0.0f, -5.f) * scale(10.f));
   new_instance(scene, quad, red_lambert,   translate( -5.0f, 0.0f, 0.f) * rotate_y(90.f) * scale(10.f));
   new_instance(scene, quad, green_lambert, translate(5.0f, 0.0f, 0.f) * rotate_y(-90.f) * scale(10.f));
   new_instance(scene, quad, white_lambert, translate(0.0f, 5.0f, 0.f) * rotate_x(90.f) * scale(10.f));
   new_instance(scene, quad, white_lambert, translate(0.0f, -5.0f, 0.f) * rotate_x(-90.f) * scale(10.f));
+  new_instance(scene, sphere, metal, translate(4.5, 4.5, -4.5) * scale(2.f));
   new_instance(scene, sphere, white_lambert, translate(-2.f, -3.f, -2.f) * scale(2.f));
+  new_instance(scene, sphere, dielectric, translate(-2.f, 0.f, 2.f) * scale(2.f));
   new_instance(scene, quad, emissive, translate(0.0f, 4.9999f, 0.f) * rotate_x(90.f) * scale(4.f));
 }
 

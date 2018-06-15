@@ -2,6 +2,7 @@
 
 #include "math/common.h"
 #include "math/vector3.h"
+#include <atomic>
 
 namespace ink
 {
@@ -9,11 +10,17 @@ namespace ink
   struct Ray;
   class RandomGenerator;
 
+  struct RenderStats
+  {
+    std::atomic<uint32> rayCount;
+  };
+
   //! Integrator abstract class
   class Integrator
   {
   public:
-    virtual Vec3f radiance(const Ray& ray, RandomGenerator& gen) const = 0;
+    virtual Vec3f trace(const Ray& ray, RandomGenerator& gen, RenderStats& stats) const = 0;
+  public:
     const Scene* scene;
   };
 
@@ -26,10 +33,10 @@ namespace ink
     Vec3f sky_radiance = Vec3f(0.7f, 0.7f, 0.7f);
 
   public:
-    virtual Vec3f radiance(const Ray& ray, RandomGenerator& gen) const;
+    virtual Vec3f trace(const Ray& ray, RandomGenerator& gen, RenderStats& stats) const;
 
   private:
-    Vec3f radiance(const Ray& ray, RandomGenerator& gen, int remaining_bounce) const;
+    Vec3f trace(const Ray& ray, RandomGenerator& gen, int remaining_bounce, RenderStats& stats) const;
   };
 
   //! Debug integrator that can easily access:
@@ -38,7 +45,7 @@ namespace ink
   class DebugIntegrator : public Integrator
   {
   public:
-    virtual Vec3f radiance(const Ray& ray, RandomGenerator& gen) const;
+    virtual Vec3f trace(const Ray& ray, RandomGenerator& gen, RenderStats& stats) const;
   };
 
 }    // namespace ink

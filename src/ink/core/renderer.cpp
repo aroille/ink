@@ -14,7 +14,7 @@
 
 namespace ink
 { 
-  void SimpleRenderer::start(Integrator& integrator, Scene& scene, Camera& camera, Film& film, ReconstructionFilter& filter)
+  void SimpleRenderer::start(Integrator& integrator, Scene& scene, Camera& camera, Film& film, ReconstructionFilter& filter, RenderStats& stats)
   {
     this->integrator = &integrator;
     this->scene = &scene;
@@ -33,11 +33,11 @@ namespace ink
     next_tile = 0;
     #pragma omp parallel
     {
-      thread_task();
+      thread_task(stats);
     }
   }
 
-  void SimpleRenderer::thread_task()
+  void SimpleRenderer::thread_task(RenderStats& stats)
   {
     RandomGenerator prim_generator( 0.5f - 0.5f*filter->extent, 0.5f + 0.5f*filter->extent);
     RandomGenerator diffuse_generator(-1.0f, 1.0f);
@@ -80,7 +80,7 @@ namespace ink
             camera->generate_ray(x, y, ray, raster_coord, prim_generator);
 
             float w = filter->eval(pixel_center_x - raster_coord.x, pixel_center_y - raster_coord.y);
-            radiance += integrator->radiance(ray, diffuse_generator) * w;;
+            radiance += integrator->trace(ray, diffuse_generator, stats) * w;;
             weigth += w;
           }
 
