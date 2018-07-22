@@ -54,6 +54,52 @@ void create_cornell_box_scene(Scene& scene, PinholeCamera& camera)
   new_instance(scene, quad, emissive, translate(0.0f, 4.9999f, 0.f) * rotate_x(90.f) * scale(4.f));
 }
 
+void create_aras_scene(Scene& scene, PinholeCamera& camera)
+{
+  camera.fov = 60.0f;
+  camera.transform = camera_look_at({ 0, 2, 3 }, { 0, 0, 0 }, { 0, 1, 0 });
+
+  SceneShape<Sphere> sphere(scene);
+  sphere->radius = 1.f;
+
+  SceneMaterial<Lambertian> mat0(scene);
+  mat0->albedo = Vec3f(0.8f, 0.8f, 0.8f);
+  SceneMaterial<Lambertian> mat1(scene);
+  mat1->albedo = Vec3f(0.8f, 0.4f, 0.4f);
+  SceneMaterial<Lambertian> mat2(scene);
+  mat2->albedo = Vec3f(0.4f, 0.8f, 0.4f);
+
+  SceneMaterial<Metal> mat3(scene);
+  mat3->albedo = Vec3f(0.4f, 0.4f, 0.8f);
+  mat3->roughness = 0.0f;
+  SceneMaterial<Metal> mat4(scene);
+  mat4->albedo = Vec3f(0.4f, 0.8f, 0.4f);
+  mat4->roughness = 0.0f;
+  SceneMaterial<Metal> mat5(scene);
+  mat5->albedo = Vec3f(0.4f, 0.8f, 0.4f);
+  mat5->roughness = 0.2f;
+  SceneMaterial<Metal> mat6(scene);
+  mat6->albedo = Vec3f(0.4f, 0.8f, 0.4f);
+  mat6->roughness = 0.6f;
+
+  SceneMaterial<Dielectric> mat7(scene);
+  mat7->ri = 1.5f;
+
+  SceneMaterial<Lambertian> mat8(scene);
+  mat8->albedo = Vec3f(0.8f, 0.6f, 0.2f);
+  mat8->emission = Vec3f(30.0f, 25.0f, 15.0f);
+
+  new_instance(scene, sphere, mat0, translate(0, -100.5, -1) * scale(100));
+  new_instance(scene, sphere, mat1, translate(2, 0, -1) * scale(0.5));
+  new_instance(scene, sphere, mat2, translate(0, 0, -1) * scale(0.5));
+  new_instance(scene, sphere, mat3, translate(-2, 0, -1) * scale(0.5));
+  new_instance(scene, sphere, mat4, translate(2, 0, 1) * scale(0.5));
+  new_instance(scene, sphere, mat5, translate(0, 0, 1) * scale(0.5));
+  new_instance(scene, sphere, mat6, translate(-2, 0, 1) * scale(0.5));
+  new_instance(scene, sphere, mat7, translate(0.5f, 1, 0.5f) * scale(0.5));
+  new_instance(scene, sphere, mat8, translate(-1.5f, 1.5f, 0.f) * scale(0.3));
+}
+
 void create_sphere_and_triangle_scene(Scene& scene, PinholeCamera& camera)
 {
   // Camera
