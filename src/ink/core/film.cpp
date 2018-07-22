@@ -20,6 +20,7 @@ namespace ink
     h = height;
     free(data);
     data = (Vec3f*)malloc(w*h*sizeof(Vec3f));
+	clear();
   }
 
   void Film::accumulate(uint32 x, uint32 y, Vec3f value)
@@ -34,8 +35,8 @@ namespace ink
 
   int toInt(float x)
   {
-    //return int(pow(clamp(x), 1 / 2.2) * 255 + .5);
-    return int(clamp(x) * 255 + .5);
+    return int(pow(clamp(x), 1 / 2.2) * 255 + .5);
+    //return int(clamp(x) * 255 + .5);
   }
 
   bool Film::save(const char* filepath) const
